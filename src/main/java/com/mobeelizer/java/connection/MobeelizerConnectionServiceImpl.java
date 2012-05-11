@@ -178,7 +178,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
     @Override
     public String sendSyncAllRequest() throws IOException {
         try {
-            return executePostAndGetJsonObject("/synchronizeAll", "version", delegate.getVersionDigest()).getString("content");
+            return executePostAndGetJsonObject("/synchronizeAll").getString("content");
         } catch (JSONException e) {
             throw new IOException(e.getMessage(), e);
         }
