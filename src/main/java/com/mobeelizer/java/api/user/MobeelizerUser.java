@@ -23,71 +23,120 @@ package com.mobeelizer.java.api.user;
 /**
  * Represents the instance's user.
  * 
- * @sinse 1.0
+ * @since 1.0
  */
 public class MobeelizerUser {
 
-    /**
-     * The login.
-     */
     private String login;
 
-    /**
-     * The password. Note that this field is not retrieve from the Cloud.
-     */
     private String password;
 
-    /**
-     * The email address.
-     */
     private String mail;
 
-    /**
-     * The group that user belongs to.
-     */
     private String group;
 
-    /**
-     * True if the user has administation privileges.
-     */
     private boolean admin;
 
+    /**
+     * Gets the login.
+     * 
+     * @return login
+     * @since 1.0
+     */
     public String getLogin() {
         return login;
     }
 
+    /**
+     * Sets the login.
+     * 
+     * @param login
+     *            login
+     * @since 1.0
+     */
     public void setLogin(final String login) {
         this.login = login;
     }
 
+    /**
+     * Gets the password. Note that this field is not retrieve from the Cloud.
+     * 
+     * @return password
+     * @since 1.0
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Sets the password.
+     * 
+     * @param password
+     *            password
+     * @since 1.0
+     */
     public void setPassword(final String password) {
         this.password = password;
     }
 
+    /**
+     * Gets the email address.
+     * 
+     * @return mail
+     * @since 1.0
+     */
     public String getMail() {
         return mail;
     }
 
+    /**
+     * Sets the email address.
+     * 
+     * @param mail
+     *            mail
+     * @since 1.0
+     */
     public void setMail(final String mail) {
         this.mail = mail;
     }
 
+    /**
+     * Gets the group that user belongs to.
+     * 
+     * @return group
+     * @since 1.0
+     */
     public String getGroup() {
         return group;
     }
 
+    /**
+     * Sets the group that user belongs to.
+     * 
+     * @param group
+     *            group
+     * @since 1.0
+     */
     public void setGroup(final String group) {
         this.group = group;
     }
 
+    /**
+     * Check if the user has administation privileges.
+     * 
+     * @return true if user has administation privileges
+     * @since 1.0
+     */
     public boolean isAdmin() {
         return admin;
     }
 
+    /**
+     * Sets whether the user has administation privileges.
+     * 
+     * @param admin
+     *            admin
+     */
     public void setAdmin(final boolean admin) {
         this.admin = admin;
     }
