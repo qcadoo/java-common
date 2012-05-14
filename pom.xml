@@ -139,7 +139,7 @@
 
 	<scm>
 	    <connection>scm:git:ssh://github.com/mobeelizer/java-common.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/mobeelizer/java-common.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:mobeelizer/java-common.git</developerConnection>
         <url>http://github.com/mobeelizer/java-common</url>
 	</scm>
 	
