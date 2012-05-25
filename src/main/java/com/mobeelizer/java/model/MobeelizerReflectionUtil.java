@@ -76,20 +76,12 @@ public final class MobeelizerReflectionUtil {
         }
     }
 
-    public static Object getValue(final Field field, final Object entity) {
-        try {
-            return field.get(entity);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
+    public static Object getValue(final MobeelizerFieldAccessor field, final Object entity) {
+        return field.get(entity);
     }
 
-    public static void setValue(final Field field, final Object entity, final Object value) {
-        try {
-            field.set(entity, value);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
+    public static void setValue(final MobeelizerFieldAccessor field, final Object entity, final Object value) {
+        field.set(entity, value);
     }
 
 }

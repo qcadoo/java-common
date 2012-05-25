@@ -45,7 +45,10 @@ public class MobeelizerDefinitionConverter {
                 continue;
             }
 
-            Class<?> clazz = findClazz(radModel, entityPackage);
+            Class<?> clazz = null;
+            if (entityPackage != null) {
+                clazz = findClazz(radModel, entityPackage);
+            }
 
             Set<MobeelizerField> fields = new HashSet<MobeelizerField>();
 
