@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.mobeelizer.java.api.MobeelizerFile;
 import com.mobeelizer.java.definition.MobeelizerErrorsHolder;
 import com.mobeelizer.java.definition.type.options.MobeelizerFieldOptions;
 import com.mobeelizer.java.definition.type.options.MobeelizerIntegerFieldOptions;
@@ -49,7 +48,7 @@ public class MobeelizerIntegerFieldTypeHelper extends MobeelizerFieldTypeHelper 
         addOption(new MobeelizerModelFieldOption(MIN_VALUE, new MobeelizerIntegerFieldOptionTypeHelper(), false));
         addOption(new MobeelizerModelFieldOption(MAX_VALUE, new MobeelizerIntegerFieldOptionTypeHelper(), false));
     }
-    
+
     @Override
     public Class<?> getDefaultAccessibleType() {
         return Integer.class;
