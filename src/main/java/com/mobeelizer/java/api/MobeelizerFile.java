@@ -20,6 +20,7 @@
 
 package com.mobeelizer.java.api;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -52,5 +53,13 @@ public interface MobeelizerFile {
      * @since 1.0
      */
     InputStream getInputStream();
+
+    /**
+     * Return the file.
+     * 
+     * @return stream
+     * @since 1.2
+     */
+    File getFile();
 
 }

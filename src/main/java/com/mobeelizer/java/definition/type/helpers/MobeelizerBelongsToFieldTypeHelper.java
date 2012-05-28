@@ -22,7 +22,6 @@ package com.mobeelizer.java.definition.type.helpers;
 
 import static com.mobeelizer.java.model.MobeelizerReflectionUtil.setValue;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -32,6 +31,7 @@ import com.mobeelizer.java.definition.type.options.MobeelizerFieldOptions;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerBelongsToFieldOptionTypeHelper;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerBooleanFieldOptionTypeHelper;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerModelFieldOption;
+import com.mobeelizer.java.model.MobeelizerFieldAccessor;
 
 public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
@@ -49,8 +49,13 @@ public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelpe
     }
 
     @Override
-    public String convertFromEntityValueToJsonValue(final Field field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsHolder errors) {
+    public Class<?> getDefaultAccessibleType() {
+        return String.class;
+    }
+
+    @Override
+    public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
+            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
         if (!validateValue(field, value, options, errors)) {
             return null;
         }
@@ -59,18 +64,18 @@ public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelpe
     }
 
     @Override
-    public Object convertFromJsonValueToEntityValue(final Field field, final String value) {
+    public Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value) {
         return value;
     }
 
     @Override
-    public Object convertFromDatabaseValueToEntityValue(final Field field, final Object value) {
+    public Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value) {
         return value;
     }
 
     @Override
-    public Object convertFromEntityValueToDatabaseValue(final Field field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsHolder errors) {
+    public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
+            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
         if (!validateValue(field, value, options, errors)) {
             return null;
         }
@@ -79,19 +84,20 @@ public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelpe
     }
 
     @Override
-    public boolean validateValue(final Field field, final Object value, final Map<String, String> options,
+    public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
             final MobeelizerErrorsHolder errors) {
         return true;
     }
 
     @Override
-    public Object convertDefaultValue(final Field field, final String defaultValue, final Map<String, String> options) {
+    public Object convertDefaultValue(final MobeelizerFieldAccessor field, final String defaultValue,
+            final Map<String, String> options) {
         return null;
     }
 
     @Override
-    protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value, final Field field,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+    protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
+            final MobeelizerFieldAccessor field, final Map<String, String> options, final MobeelizerErrorsHolder errors) {
         String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
 
         if (!errors.isValid()) {
@@ -102,18 +108,19 @@ public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelpe
     }
 
     @Override
-    protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final Field field,
+    protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
             final Map<String, String> options, final MobeelizerErrorsHolder errors) {
         // empty
     }
 
     @Override
-    protected void setNullValueFromJsonEntityToEntity(final Field field, final Map<String, String> options, final Object entity) {
+    protected void setNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final Map<String, String> options,
+            final Object entity) {
         // empty
     }
 
     @Override
-    protected void setNotNullValueFromJsonEntityToEntity(final Field field, final String value,
+    protected void setNotNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final String value,
             final Map<String, String> options, final Object entity) {
         setValue(field, entity, convertFromJsonValueToEntityValue(field, value));
     }

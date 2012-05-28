@@ -20,7 +20,6 @@
 
 package com.mobeelizer.java.definition;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +32,7 @@ import com.mobeelizer.java.definition.type.helpers.MobeelizerFileFieldTypeHelper
 import com.mobeelizer.java.definition.type.helpers.MobeelizerIntegerFieldTypeHelper;
 import com.mobeelizer.java.definition.type.helpers.MobeelizerTextFieldTypeHelper;
 import com.mobeelizer.java.definition.type.options.MobeelizerFieldOptions;
+import com.mobeelizer.java.model.MobeelizerFieldAccessor;
 
 public enum MobeelizerFieldType {
 
@@ -51,17 +51,23 @@ public enum MobeelizerFieldType {
         return helper.getAccessibleTypes();
     }
 
-    public Object convertDefaultValue(final Field field, final String defaultValue, final Map<String, String> options) {
+    public Class<?> getDefaultAccessibleType() {
+        return helper.getDefaultAccessibleType();
+    }
+
+    public Object convertDefaultValue(final MobeelizerFieldAccessor field, final String defaultValue,
+            final Map<String, String> options) {
         return helper.convertDefaultValue(field, defaultValue, options);
     }
 
-    public void setValueFromJsonEntityToEntity(final Field field, final Map<String, String> values,
+    public void setValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final Map<String, String> values,
             final Map<String, String> options, final Object entity) {
         helper.setValueFromJsonEntityToEntity(field, values, options, entity);
     }
 
-    public void setValueFromEntityToJsonEntity(final Field field, final Object entity, final Map<String, String> values,
-            final boolean required, final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+    public void setValueFromEntityToJsonEntity(final MobeelizerFieldAccessor field, final Object entity,
+            final Map<String, String> values, final boolean required, final Map<String, String> options,
+            final MobeelizerErrorsHolder errors) {
         helper.setValueFromEntityToJsonEntity(field, entity, values, required, options, errors);
     }
 
@@ -81,21 +87,21 @@ public enum MobeelizerFieldType {
         return helper.parseValue(value, options);
     }
 
-    public String convertFromEntityValueToJsonValue(final Field field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsHolder errors) {
+    public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
+            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
         return helper.convertFromEntityValueToJsonValue(field, value, options, errors);
     }
 
-    public Object convertFromJsonValueToEntityValue(final Field field, final String value) {
+    public Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value) {
         return helper.convertFromJsonValueToEntityValue(field, value);
     }
 
-    public Object convertFromDatabaseValueToEntityValue(final Field field, final Object value) {
+    public Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value) {
         return helper.convertFromDatabaseValueToEntityValue(field, value);
     }
 
-    public Object convertFromEntityValueToDatabaseValue(final Field field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsHolder errors) {
+    public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
+            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
         return helper.convertFromEntityValueToDatabaseValue(field, value, options, errors);
     }
 

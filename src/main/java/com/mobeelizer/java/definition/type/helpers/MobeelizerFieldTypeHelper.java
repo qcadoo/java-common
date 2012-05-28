@@ -33,6 +33,7 @@ import java.util.Set;
 import com.mobeelizer.java.definition.MobeelizerErrorsHolder;
 import com.mobeelizer.java.definition.type.options.MobeelizerFieldOptions;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerModelFieldOption;
+import com.mobeelizer.java.model.MobeelizerFieldAccessor;
 
 public abstract class MobeelizerFieldTypeHelper {
 
@@ -48,23 +49,27 @@ public abstract class MobeelizerFieldTypeHelper {
         return accessibleTypes;
     }
 
-    public abstract Object convertDefaultValue(final Field field, final String defaultValue, final Map<String, String> options);
+    public abstract Class<?> getDefaultAccessibleType();
 
-    public abstract String convertFromEntityValueToJsonValue(final Field field, final Object value,
+    public abstract Object convertDefaultValue(final MobeelizerFieldAccessor field, final String defaultValue,
+            final Map<String, String> options);
+
+    public abstract String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
             final Map<String, String> options, final MobeelizerErrorsHolder errors);
 
-    public abstract Object convertFromJsonValueToEntityValue(final Field field, final String value);
+    public abstract Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value);
 
-    public abstract Object convertFromDatabaseValueToEntityValue(final Field field, final Object value);
+    public abstract Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value);
 
-    public abstract Object convertFromEntityValueToDatabaseValue(final Field field, final Object value,
+    public abstract Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
             final Map<String, String> options, final MobeelizerErrorsHolder errors);
 
-    public abstract boolean validateValue(final Field field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsHolder errors);
+    public abstract boolean validateValue(final MobeelizerFieldAccessor field, final Object value,
+            final Map<String, String> options, final MobeelizerErrorsHolder errors);
 
-    public void setValueFromEntityToJsonEntity(final Field field, final Object entity, final Map<String, String> values,
-            final boolean required, final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+    public void setValueFromEntityToJsonEntity(final MobeelizerFieldAccessor field, final Object entity,
+            final Map<String, String> values, final boolean required, final Map<String, String> options,
+            final MobeelizerErrorsHolder errors) {
         Object value = getValue(field, entity);
 
         if (value == null && required) {
@@ -79,7 +84,7 @@ public abstract class MobeelizerFieldTypeHelper {
         }
     }
 
-    public void setValueFromJsonEntityToEntity(final Field field, final Map<String, String> values,
+    public void setValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final Map<String, String> values,
             final Map<String, String> options, final Object entity) {
         String value = values.get(field.getName());
 
@@ -90,17 +95,17 @@ public abstract class MobeelizerFieldTypeHelper {
         }
     }
 
-    protected abstract void setNullValueFromJsonEntityToEntity(final Field field, final Map<String, String> options2,
-            final Object entity);
+    protected abstract void setNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field,
+            final Map<String, String> options2, final Object entity);
 
-    protected abstract void setNotNullValueFromJsonEntityToEntity(final Field field, final String value,
+    protected abstract void setNotNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final String value,
             final Map<String, String> options, final Object entity);
 
     protected abstract void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
-            final Field field, final Map<String, String> options, final MobeelizerErrorsHolder errors);
+            final MobeelizerFieldAccessor field, final Map<String, String> options, final MobeelizerErrorsHolder errors);
 
-    protected abstract void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final Field field,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors);
+    protected abstract void setNullValueFromEntityToJsonEntity(final Map<String, String> values,
+            final MobeelizerFieldAccessor field, final Map<String, String> options, final MobeelizerErrorsHolder errors);
 
     public abstract String validateAndNormalizeValue(final String value, final MobeelizerFieldOptions options);
 

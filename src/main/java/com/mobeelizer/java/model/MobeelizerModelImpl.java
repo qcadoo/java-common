@@ -25,7 +25,6 @@ import static com.mobeelizer.java.model.MobeelizerReflectionUtil.getOptionalFiel
 import static com.mobeelizer.java.model.MobeelizerReflectionUtil.getValue;
 import static com.mobeelizer.java.model.MobeelizerReflectionUtil.setValue;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,15 +42,15 @@ public class MobeelizerModelImpl implements MobeelizerModel {
 
     private final Class<?> clazz;
 
-    private final Field guidField;
+    private final MobeelizerFieldAccessor guidField;
 
-    private final Field ownerField;
+    private final MobeelizerFieldAccessor ownerField;
 
-    private final Field conflictedField;
+    private final MobeelizerFieldAccessor conflictedField;
 
-    private final Field modifiedField;
+    private final MobeelizerFieldAccessor modifiedField;
 
-    private final Field deletedField;
+    private final MobeelizerFieldAccessor deletedField;
 
     private final Set<MobeelizerField> fields;
 
@@ -65,11 +64,19 @@ public class MobeelizerModelImpl implements MobeelizerModel {
         this.name = name;
         this.fields = fields;
         this.credentials = new MobeelizerModelCredentialsImpl(credentials);
-        guidField = getField(clazz, "guid", String.class);
-        ownerField = getOptionalField(clazz, "owner", String.class);
-        conflictedField = getOptionalField(clazz, "conflicted", Boolean.TYPE);
-        modifiedField = getOptionalField(clazz, "modified", Boolean.TYPE);
-        deletedField = getOptionalField(clazz, "deleted", Boolean.TYPE);
+        if (clazz != null) {
+            guidField = new ReflectionMobeelizerFieldAccessor(getField(clazz, "guid", String.class));
+            ownerField = new ReflectionMobeelizerFieldAccessor(getOptionalField(clazz, "owner", String.class));
+            conflictedField = new ReflectionMobeelizerFieldAccessor(getOptionalField(clazz, "conflicted", Boolean.TYPE));
+            modifiedField = new ReflectionMobeelizerFieldAccessor(getOptionalField(clazz, "modified", Boolean.TYPE));
+            deletedField = new ReflectionMobeelizerFieldAccessor(getOptionalField(clazz, "deleted", Boolean.TYPE));
+        } else {
+            guidField = new BasicMobeelizerFieldAccessor("guid", String.class);
+            ownerField = new BasicMobeelizerFieldAccessor("owner", String.class);
+            conflictedField = new BasicMobeelizerFieldAccessor("conflicted", Boolean.class);
+            modifiedField = new BasicMobeelizerFieldAccessor("modified", Boolean.class);
+            deletedField = new BasicMobeelizerFieldAccessor("deleted", Boolean.class);
+        }
     }
 
     @Override
@@ -92,23 +99,23 @@ public class MobeelizerModelImpl implements MobeelizerModel {
         return new HashSet<MobeelizerField>(fields);
     }
 
-    public Field getGuidField() {
+    public MobeelizerFieldAccessor getGuidField() {
         return guidField;
     }
 
-    public Field getOwnerField() {
+    public MobeelizerFieldAccessor getOwnerField() {
         return ownerField;
     }
 
-    public Field getModifiedField() {
+    public MobeelizerFieldAccessor getModifiedField() {
         return modifiedField;
     }
 
-    public Field getDeletedField() {
+    public MobeelizerFieldAccessor getDeletedField() {
         return deletedField;
     }
 
-    public Field getConflictedField() {
+    public MobeelizerFieldAccessor getConflictedField() {
         return conflictedField;
     }
 

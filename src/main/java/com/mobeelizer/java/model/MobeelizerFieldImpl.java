@@ -20,7 +20,6 @@
 
 package com.mobeelizer.java.model;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
 import com.mobeelizer.java.api.MobeelizerField;
@@ -38,7 +37,7 @@ public class MobeelizerFieldImpl implements MobeelizerField {
 
     private final Object defaultValue;
 
-    private final Field field;
+    private final MobeelizerFieldAccessor field;
 
     private final MobeelizerFieldType type;
 
@@ -52,7 +51,13 @@ public class MobeelizerFieldImpl implements MobeelizerField {
         this.credentials = new MobeelizerFieldCredentialsImpl(credentials);
         this.options = field.getOptions();
         this.type = field.getType();
-        this.field = MobeelizerReflectionUtil.getField(clazz, name, type.getAccessibleTypes());
+        if (clazz != null) {
+            this.field = new ReflectionMobeelizerFieldAccessor(MobeelizerReflectionUtil.getField(clazz, name,
+                    type.getAccessibleTypes()));
+        } else {
+            this.field = new BasicMobeelizerFieldAccessor(field);
+        }
+
         this.required = field.isRequired();
         this.defaultValue = type.convertDefaultValue(this.field, field.getDefaultValue(), options);
     }
@@ -86,7 +91,7 @@ public class MobeelizerFieldImpl implements MobeelizerField {
         type.setValueFromEntityToJsonEntity(field, entity, values, required, options, errors);
     }
 
-    public Field getField() {
+    public MobeelizerFieldAccessor getField() {
         return field;
     }
 
