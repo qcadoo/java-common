@@ -148,13 +148,11 @@ public class MobeelizerModelImpl implements MobeelizerModel {
                 setValue(deletedField, entity, json.isDeleted());
             }
 
-            Map<String, String> fields = new HashMap<String, String>();
-
-            for (MobeelizerField field : this.fields) {
-                ((MobeelizerFieldImpl) field).setValueFromJsonEntityToEntity(fields, entity);
+            if (json.getFields() != null) {
+                for (MobeelizerField field : this.fields) {
+                    ((MobeelizerFieldImpl) field).setValueFromJsonEntityToEntity(json.getFields(), entity);
+                }
             }
-
-            json.setFields(fields);
 
             return entity;
         } catch (InstantiationException e) {
@@ -174,11 +172,10 @@ public class MobeelizerModelImpl implements MobeelizerModel {
         }
 
         if (conflictedField != null) {
-            json.setConflictState((Boolean) getValue(conflictedField, entity) ? ConflictState.NO_IN_CONFLICT
-                    : ConflictState.IN_CONFLICT);
+            json.setConflictState((Boolean) getValue(conflictedField, entity) ? ConflictState.IN_CONFLICT
+                    : ConflictState.NO_IN_CONFLICT);
         } else {
-            json.setConflictState((Boolean) getValue(conflictedField, entity) ? ConflictState.NO_IN_CONFLICT
-                    : ConflictState.IN_CONFLICT);
+            json.setConflictState(ConflictState.NO_IN_CONFLICT);
         }
 
         Map<String, String> values = new HashMap<String, String>();
