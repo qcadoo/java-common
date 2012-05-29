@@ -25,6 +25,7 @@ import static com.mobeelizer.java.model.MobeelizerReflectionUtil.getOptionalFiel
 import static com.mobeelizer.java.model.MobeelizerReflectionUtil.getValue;
 import static com.mobeelizer.java.model.MobeelizerReflectionUtil.setValue;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -66,16 +67,25 @@ public class MobeelizerModelImpl implements MobeelizerModel {
         this.credentials = new MobeelizerModelCredentialsImpl(credentials);
         if (clazz != null) {
             guidField = new ReflectionMobeelizerFieldAccessor(getField(clazz, "guid", String.class));
-            ownerField = new ReflectionMobeelizerFieldAccessor(getOptionalField(clazz, "owner", String.class));
-            conflictedField = new ReflectionMobeelizerFieldAccessor(getOptionalField(clazz, "conflicted", Boolean.TYPE));
-            modifiedField = new ReflectionMobeelizerFieldAccessor(getOptionalField(clazz, "modified", Boolean.TYPE));
-            deletedField = new ReflectionMobeelizerFieldAccessor(getOptionalField(clazz, "deleted", Boolean.TYPE));
+            ownerField = getOptionalFieldAccessor(clazz, "owner", String.class);
+            conflictedField = getOptionalFieldAccessor(clazz, "conflicted", Boolean.TYPE);
+            modifiedField = getOptionalFieldAccessor(clazz, "modified", Boolean.TYPE);
+            deletedField = getOptionalFieldAccessor(clazz, "deleted", Boolean.TYPE);
         } else {
             guidField = new BasicMobeelizerFieldAccessor("guid", String.class);
             ownerField = new BasicMobeelizerFieldAccessor("owner", String.class);
             conflictedField = new BasicMobeelizerFieldAccessor("conflicted", Boolean.class);
             modifiedField = new BasicMobeelizerFieldAccessor("modified", Boolean.class);
             deletedField = new BasicMobeelizerFieldAccessor("deleted", Boolean.class);
+        }
+    }
+
+    private MobeelizerFieldAccessor getOptionalFieldAccessor(final Class<?> clazz, final String name, final Class<?> type) {
+        Field fieldAccesor = getOptionalField(clazz, name, type);
+        if (fieldAccesor == null) {
+            return null;
+        } else {
+            return new ReflectionMobeelizerFieldAccessor(fieldAccesor);
         }
     }
 
