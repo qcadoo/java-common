@@ -63,9 +63,9 @@ import com.mobeelizer.java.api.user.MobeelizerUser;
 
 public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionService {
 
-    private static final String DEFAULT_TEST_URL = "http://cloud.mobeelizer.com/sync";
+    private static final String DEFAULT_TEST_URL = "https://cloud.mobeelizer.com/sync";
 
-    private static final String DEFAULT_PRODUCTION_URL = "http://cloud.mobeelizer.com/sync";
+    private static final String DEFAULT_PRODUCTION_URL = "https://cloud.mobeelizer.com/sync";
 
     private final MobeelizerConnectionServiceDelegate delegate;
 
