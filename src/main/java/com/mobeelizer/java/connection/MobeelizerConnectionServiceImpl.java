@@ -32,9 +32,17 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -45,11 +53,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -379,10 +392,50 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         }
     }
 
+    @SuppressWarnings("deprecation")
+    private HttpClient httpClient() {
+        try {
+            SSLContext ctx = SSLContext.getInstance("TLS");
+
+            X509TrustManager tm = new X509TrustManager() {
+
+                @Override
+                public void checkClientTrusted(final X509Certificate[] xcs, final String string) throws CertificateException {
+                }
+
+                @Override
+                public void checkServerTrusted(final X509Certificate[] xcs, final String string) throws CertificateException {
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+            };
+
+            ctx.init(null, new TrustManager[] { tm }, null);
+            SSLSocketFactory ssf = new SSLSocketFactory(ctx);
+            ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            ClientConnectionManager ccm = new SingleClientConnManager();
+            SchemeRegistry sr = ccm.getSchemeRegistry();
+            sr.register(new Scheme("https", ssf, 443));
+
+            HttpParams params = new BasicHttpParams();
+
+            DefaultHttpClient httpClient = new DefaultHttpClient(ccm, params);
+            HttpConnectionParams.setConnectionTimeout(params, 10000);
+            HttpConnectionParams.setSoTimeout(params, 10000);
+
+            return httpClient;
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        } catch (KeyManagementException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
     private JSONObject executeAndGetJsonObject(final HttpRequestBase request) throws IOException {
-        HttpParams parameters = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(parameters, 10000);
-        HttpClient client = new DefaultHttpClient(parameters);
+        HttpClient client = httpClient();
 
         InputStream is = null;
         Reader reader = null;
@@ -449,9 +502,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
     }
 
     private File executeAndGetFile(final HttpRequestBase request) throws IOException {
-        HttpParams parameters = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(parameters, 10000);
-        HttpClient client = new DefaultHttpClient(parameters);
+        HttpClient client = httpClient();
 
         BufferedInputStream in = null;
         BufferedOutputStream out = null;
