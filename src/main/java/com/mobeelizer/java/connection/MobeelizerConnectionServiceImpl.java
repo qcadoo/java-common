@@ -207,7 +207,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
     }
 
     @Override
-    public boolean waitUntilSyncRequestComplete(final String ticket) throws IOException {
+    public MobeelizerConnectionResult waitUntilSyncRequestComplete(final String ticket) throws IOException {
         try {
             for (int i = 0; i < 100; i++) {
                 JSONObject json = executeGetAndGetJsonObject("/checkStatus", new String[] { "ticket", ticket });
@@ -217,12 +217,13 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
                 delegate.logInfo("Check task status: " + status);
 
                 if ("REJECTED".toString().equals(status)) {
-                    delegate.logInfo("Check task status success: " + status + " with result "
+                    String message = "Check task status success: " + status + " with result "
                             + json.getJSONObject("content").getString("result") + " and message '"
-                            + json.getJSONObject("content").getString("message") + "'");
-                    return false;
+                            + json.getJSONObject("content").getString("message") + "'";
+                    delegate.logInfo(message);
+                    return MobeelizerConnectionResult.failure(message);
                 } else if ("FINISHED".toString().equals(status)) {
-                    return true;
+                    return MobeelizerConnectionResult.success();
                 }
 
                 try {
@@ -235,8 +236,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             throw new IOException(e.getMessage(), e);
         }
 
-        return false;
-
+        return MobeelizerConnectionResult.failure(null);
     }
 
     @Override

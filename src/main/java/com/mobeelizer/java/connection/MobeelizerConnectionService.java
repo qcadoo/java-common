@@ -49,7 +49,7 @@ public interface MobeelizerConnectionService {
 
     String sendSyncDiffRequest(final File outputFile) throws IOException;
 
-    boolean waitUntilSyncRequestComplete(final String ticket) throws IOException;
+    MobeelizerConnectionResult waitUntilSyncRequestComplete(final String ticket) throws IOException;
 
     File getSyncData(final String ticket) throws IOException;
 
