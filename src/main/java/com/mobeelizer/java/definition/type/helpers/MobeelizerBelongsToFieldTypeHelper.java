@@ -32,118 +32,120 @@ import com.mobeelizer.java.definition.type.options.type.MobeelizerBelongsToField
 import com.mobeelizer.java.definition.type.options.type.MobeelizerBooleanFieldOptionTypeHelper;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerModelFieldOption;
 import com.mobeelizer.java.model.MobeelizerFieldAccessor;
+import com.mobeelizer.java.sync.MobeelizerJsonEntity;
 
 public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
-    private static final Pattern uuidPattern = Pattern
-            .compile("^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}");
+	private static final Pattern uuidPattern = Pattern.compile(MobeelizerJsonEntity.UUID_PATTERN);
 
-    public static final String ANALYZE_CONFLICT = "analyzeConflict";
+	public static final String ANALYZE_CONFLICT = "analyzeConflict";
 
-    public static final String MODEL = "model";
+	public static final String MODEL = "model";
 
-    public MobeelizerBelongsToFieldTypeHelper() {
-        super(String.class); // TODO V3 auto proxy on belongsTo fields - Object.class
-        addOption(new MobeelizerModelFieldOption(ANALYZE_CONFLICT, new MobeelizerBooleanFieldOptionTypeHelper(), false));
-        addOption(new MobeelizerModelFieldOption(MODEL, new MobeelizerBelongsToFieldOptionTypeHelper(), true));
-    }
+	public MobeelizerBelongsToFieldTypeHelper() {
+		super(String.class); // TODO V3 auto proxy on belongsTo fields -
+								// Object.class
+		addOption(new MobeelizerModelFieldOption(ANALYZE_CONFLICT, new MobeelizerBooleanFieldOptionTypeHelper(), false));
+		addOption(new MobeelizerModelFieldOption(MODEL, new MobeelizerBelongsToFieldOptionTypeHelper(), true));
+	}
 
-    @Override
-    public Class<?> getDefaultAccessibleType() {
-        return String.class;
-    }
+	@Override
+	public Class<?> getDefaultAccessibleType() {
+		return String.class;
+	}
 
-    @Override
-    public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
-        if (!validateValue(field, value, options, errors)) {
-            return null;
-        }
+	@Override
+	public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
+			final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+		if (!validateValue(field, value, options, errors)) {
+			return null;
+		}
 
-        return (String) value;
-    }
+		return (String) value;
+	}
 
-    @Override
-    public Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value) {
-        return value;
-    }
+	@Override
+	public Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value) {
+		return value;
+	}
 
-    @Override
-    public Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value) {
-        return value;
-    }
+	@Override
+	public Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value) {
+		return value;
+	}
 
-    @Override
-    public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
-        if (!validateValue(field, value, options, errors)) {
-            return null;
-        }
+	@Override
+	public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
+			final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+		if (!validateValue(field, value, options, errors)) {
+			return null;
+		}
 
-        return value;
-    }
+		return value;
+	}
 
-    @Override
-    public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsHolder errors) {
-        return true;
-    }
+	@Override
+	public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
+			final MobeelizerErrorsHolder errors) {
+		return true;
+	}
 
-    @Override
-    public Object convertDefaultValue(final MobeelizerFieldAccessor field, final String defaultValue,
-            final Map<String, String> options) {
-        return null;
-    }
+	@Override
+	public Object convertDefaultValue(final MobeelizerFieldAccessor field, final String defaultValue,
+			final Map<String, String> options) {
+		return null;
+	}
 
-    @Override
-    protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
-            final MobeelizerFieldAccessor field, final Map<String, String> options, final MobeelizerErrorsHolder errors) {
-        String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
+	@Override
+	protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
+			final MobeelizerFieldAccessor field, final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+		String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
 
-        if (!errors.isValid()) {
-            return;
-        }
+		if (!errors.isValid()) {
+			return;
+		}
 
-        values.put(field.getName(), stringValue);
-    }
+		values.put(field.getName(), stringValue);
+	}
 
-    @Override
-    protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
-        // empty
-    }
+	@Override
+	protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
+			final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+		// empty
+	}
 
-    @Override
-    protected void setNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final Object entity) {
-        // empty
-    }
+	@Override
+	protected void setNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final Map<String, String> options,
+			final Object entity) {
+		// empty
+	}
 
-    @Override
-    protected void setNotNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final String value,
-            final Map<String, String> options, final Object entity) {
-        setValue(field, entity, convertFromJsonValueToEntityValue(field, value));
-    }
+	@Override
+	protected void setNotNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final String value,
+			final Map<String, String> options, final Object entity) {
+		setValue(field, entity, convertFromJsonValueToEntityValue(field, value));
+	}
 
-    @Override
-    public String validateAndNormalizeValue(final String value, final MobeelizerFieldOptions options) {
-        if (!uuidPattern.matcher(value).matches()) {
-            throw new IllegalStateException("Illegal guid value: " + value);
-        }
+	@Override
+	public String validateAndNormalizeValue(final String value, final MobeelizerFieldOptions options) {
+		if (!uuidPattern.matcher(value).matches()) {
+			throw new IllegalStateException("Illegal guid value: " + value);
+		}
 
-        // TODO V2 check if guid points to existing entity of proper model: options.getModel()
+		// TODO V2 check if guid points to existing entity of proper model:
+		// options.getModel()
 
-        return value;
-    }
+		return value;
+	}
 
-    @Override
-    protected Class<? extends MobeelizerFieldOptions> getOptionObjectClass() {
-        return MobeelizerBelongsToFieldOptions.class;
-    }
+	@Override
+	protected Class<? extends MobeelizerFieldOptions> getOptionObjectClass() {
+		return MobeelizerBelongsToFieldOptions.class;
+	}
 
-    @Override
-    public Object parseValue(final String value, final MobeelizerFieldOptions options) {
-        return value;
-    }
+	@Override
+	public Object parseValue(final String value, final MobeelizerFieldOptions options) {
+		return value;
+	}
 
 }
