@@ -71,7 +71,7 @@ public class MobeelizerApplicationDefinition implements Serializable {
             sb.append("$");
 
             MobeelizerApplicationDefinition.digestSortJoinAndAdd(sb, models);
-
+            
             digest = encrypt(sb.toString());
         }
         return digest;
