@@ -41,158 +41,174 @@ import com.mobeelizer.java.sync.MobeelizerJsonEntity.ConflictState;
 
 public class MobeelizerModelImpl implements MobeelizerModel {
 
-    private final Class<?> clazz;
+	private final Class<?> clazz;
 
-    private final MobeelizerFieldAccessor guidField;
+	private final MobeelizerFieldAccessor guidField;
 
-    private final MobeelizerFieldAccessor ownerField;
+	private final MobeelizerFieldAccessor ownerField;
 
-    private final MobeelizerFieldAccessor conflictedField;
+	private final MobeelizerFieldAccessor groupField;
 
-    private final MobeelizerFieldAccessor modifiedField;
+	private final MobeelizerFieldAccessor conflictedField;
 
-    private final MobeelizerFieldAccessor deletedField;
+	private final MobeelizerFieldAccessor modifiedField;
 
-    private final Set<MobeelizerField> fields;
+	private final MobeelizerFieldAccessor deletedField;
 
-    private final String name;
+	private final Set<MobeelizerField> fields;
 
-    private final MobeelizerModelCredentials credentials;
+	private final String name;
 
-    public MobeelizerModelImpl(final Class<?> clazz, final String name, final MobeelizerModelCredentialsDefinition credentials,
-            final Set<MobeelizerField> fields) {
-        this.clazz = clazz;
-        this.name = name;
-        this.fields = fields;
-        this.credentials = new MobeelizerModelCredentialsImpl(credentials);
-        if (clazz != null) {
-            guidField = new ReflectionMobeelizerFieldAccessor(getField(clazz, "guid", String.class));
-            ownerField = getOptionalFieldAccessor(clazz, "owner", String.class);
-            conflictedField = getOptionalFieldAccessor(clazz, "conflicted", Boolean.TYPE);
-            modifiedField = getOptionalFieldAccessor(clazz, "modified", Boolean.TYPE);
-            deletedField = getOptionalFieldAccessor(clazz, "deleted", Boolean.TYPE);
-        } else {
-            guidField = new BasicMobeelizerFieldAccessor("guid", String.class);
-            ownerField = new BasicMobeelizerFieldAccessor("owner", String.class);
-            conflictedField = new BasicMobeelizerFieldAccessor("conflicted", Boolean.class);
-            modifiedField = new BasicMobeelizerFieldAccessor("modified", Boolean.class);
-            deletedField = new BasicMobeelizerFieldAccessor("deleted", Boolean.class);
-        }
-    }
+	private final MobeelizerModelCredentials credentials;
 
-    private MobeelizerFieldAccessor getOptionalFieldAccessor(final Class<?> clazz, final String name, final Class<?> type) {
-        Field fieldAccesor = getOptionalField(clazz, name, type);
-        if (fieldAccesor == null) {
-            return null;
-        } else {
-            return new ReflectionMobeelizerFieldAccessor(fieldAccesor);
-        }
-    }
+	public MobeelizerModelImpl(final Class<?> clazz, final String name, final MobeelizerModelCredentialsDefinition credentials,
+			final Set<MobeelizerField> fields) {
+		this.clazz = clazz;
+		this.name = name;
+		this.fields = fields;
+		this.credentials = new MobeelizerModelCredentialsImpl(credentials);
+		if (clazz != null) {
+			guidField = new ReflectionMobeelizerFieldAccessor(getField(clazz, "guid", String.class));
+			ownerField = getOptionalFieldAccessor(clazz, "owner", String.class);
+			groupField = getOptionalFieldAccessor(clazz, "group", String.class);
+			conflictedField = getOptionalFieldAccessor(clazz, "conflicted", Boolean.TYPE);
+			modifiedField = getOptionalFieldAccessor(clazz, "modified", Boolean.TYPE);
+			deletedField = getOptionalFieldAccessor(clazz, "deleted", Boolean.TYPE);
+		} else {
+			guidField = new BasicMobeelizerFieldAccessor("guid", String.class);
+			ownerField = new BasicMobeelizerFieldAccessor("owner", String.class);
+			groupField = new BasicMobeelizerFieldAccessor("group", String.class);
+			conflictedField = new BasicMobeelizerFieldAccessor("conflicted", Boolean.class);
+			modifiedField = new BasicMobeelizerFieldAccessor("modified", Boolean.class);
+			deletedField = new BasicMobeelizerFieldAccessor("deleted", Boolean.class);
+		}
+	}
 
-    @Override
-    public Class<?> getMappingClass() {
-        return clazz;
-    }
+	private MobeelizerFieldAccessor getOptionalFieldAccessor(final Class<?> clazz, final String name, final Class<?> type) {
+		Field fieldAccesor = getOptionalField(clazz, name, type);
+		if (fieldAccesor == null) {
+			return null;
+		} else {
+			return new ReflectionMobeelizerFieldAccessor(fieldAccesor);
+		}
+	}
 
-    @Override
-    public String getName() {
-        return name;
-    }
+	@Override
+	public Class<?> getMappingClass() {
+		return clazz;
+	}
 
-    @Override
-    public MobeelizerModelCredentials getCredentials() {
-        return credentials;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public Set<MobeelizerField> getFields() {
-        return new HashSet<MobeelizerField>(fields);
-    }
+	@Override
+	public MobeelizerModelCredentials getCredentials() {
+		return credentials;
+	}
 
-    public MobeelizerFieldAccessor getGuidField() {
-        return guidField;
-    }
+	@Override
+	public Set<MobeelizerField> getFields() {
+		return new HashSet<MobeelizerField>(fields);
+	}
 
-    public MobeelizerFieldAccessor getOwnerField() {
-        return ownerField;
-    }
+	public MobeelizerFieldAccessor getGuidField() {
+		return guidField;
+	}
 
-    public MobeelizerFieldAccessor getModifiedField() {
-        return modifiedField;
-    }
+	public MobeelizerFieldAccessor getOwnerField() {
+		return ownerField;
+	}
 
-    public MobeelizerFieldAccessor getDeletedField() {
-        return deletedField;
-    }
+	public MobeelizerFieldAccessor getGroupField() {
+		return groupField;
+	}
 
-    public MobeelizerFieldAccessor getConflictedField() {
-        return conflictedField;
-    }
+	public MobeelizerFieldAccessor getModifiedField() {
+		return modifiedField;
+	}
 
-    public Object getEntityFromJsonEntity(final MobeelizerJsonEntity json) {
-        try {
-            Object entity = clazz.newInstance();
+	public MobeelizerFieldAccessor getDeletedField() {
+		return deletedField;
+	}
 
-            setValue(guidField, entity, json.getGuid());
+	public MobeelizerFieldAccessor getConflictedField() {
+		return conflictedField;
+	}
 
-            if (ownerField != null) {
-                setValue(ownerField, entity, json.getOwner());
-            }
+	public Object getEntityFromJsonEntity(final MobeelizerJsonEntity json) {
+		try {
+			Object entity = clazz.newInstance();
 
-            if (conflictedField != null) {
-                setValue(conflictedField, entity,
-                        json.getConflictState() != null && !json.getConflictState().equals(ConflictState.NO_IN_CONFLICT));
-            }
+			setValue(guidField, entity, json.getGuid());
 
-            if (deletedField != null) {
-                setValue(deletedField, entity, json.isDeleted());
-            }
+			if (ownerField != null) {
+				setValue(ownerField, entity, json.getOwner());
+			}
 
-            if (json.getFields() != null) {
-                for (MobeelizerField field : this.fields) {
-                    ((MobeelizerFieldImpl) field).setValueFromJsonEntityToEntity(json.getFields(), entity);
-                }
-            }
+			if (groupField != null) {
+				setValue(groupField, entity, json.getGroup());
+			}
 
-            return entity;
-        } catch (InstantiationException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
-    }
+			if (conflictedField != null) {
+				setValue(conflictedField, entity,
+						json.getConflictState() != null && !json.getConflictState().equals(ConflictState.NO_IN_CONFLICT));
+			}
 
-    public MobeelizerJsonEntity getJsonEntityFromEntity(final Object entity, final MobeelizerErrorsHolder errors) {
-        MobeelizerJsonEntity json = new MobeelizerJsonEntity();
-        json.setModel(name);
-        json.setGuid((String) getValue(guidField, entity));
+			if (deletedField != null) {
+				setValue(deletedField, entity, json.isDeleted());
+			}
 
-        if (ownerField != null) {
-            json.setOwner((String) getValue(ownerField, entity));
-        }
+			if (json.getFields() != null) {
+				for (MobeelizerField field : this.fields) {
+					((MobeelizerFieldImpl) field).setValueFromJsonEntityToEntity(json.getFields(), entity);
+				}
+			}
 
-        if (conflictedField != null) {
-            json.setConflictState((Boolean) getValue(conflictedField, entity) ? ConflictState.IN_CONFLICT
-                    : ConflictState.NO_IN_CONFLICT);
-        } else {
-            json.setConflictState(ConflictState.NO_IN_CONFLICT);
-        }
+			return entity;
+		} catch (InstantiationException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		} catch (IllegalAccessException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
+	}
 
-        Map<String, String> values = new HashMap<String, String>();
+	public MobeelizerJsonEntity getJsonEntityFromEntity(final Object entity, final MobeelizerErrorsHolder errors) {
+		MobeelizerJsonEntity json = new MobeelizerJsonEntity();
+		json.setModel(name);
+		json.setGuid((String) getValue(guidField, entity));
 
-        if (deletedField != null) {
-            values.put("s_deleted", (Boolean) getValue(deletedField, entity) ? "true" : "false");
-        } else {
-            values.put("s_deleted", "false");
-        }
+		if (ownerField != null) {
+			json.setOwner((String) getValue(ownerField, entity));
+		}
 
-        for (MobeelizerField field : fields) {
-            ((MobeelizerFieldImpl) field).setValueFromEntityToJsonEntity(entity, values, errors);
-        }
+		if (groupField != null) {
+			json.setGroup((String) getValue(groupField, entity));
+		}
 
-        json.setFields(values);
+		if (conflictedField != null) {
+			json.setConflictState((Boolean) getValue(conflictedField, entity) ? ConflictState.IN_CONFLICT
+					: ConflictState.NO_IN_CONFLICT);
+		} else {
+			json.setConflictState(ConflictState.NO_IN_CONFLICT);
+		}
 
-        return json;
-    }
+		Map<String, String> values = new HashMap<String, String>();
+
+		if (deletedField != null) {
+			values.put("s_deleted", (Boolean) getValue(deletedField, entity) ? "true" : "false");
+		} else {
+			values.put("s_deleted", "false");
+		}
+
+		for (MobeelizerField field : fields) {
+			((MobeelizerFieldImpl) field).setValueFromEntityToJsonEntity(entity, values, errors);
+		}
+
+		json.setFields(values);
+
+		return json;
+	}
 
 }

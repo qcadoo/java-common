@@ -48,6 +48,8 @@ public class MobeelizerJsonEntity {
 
 	private String owner;
 
+	private String group;
+
 	public MobeelizerJsonEntity() {
 		// empty
 	}
@@ -60,6 +62,10 @@ public class MobeelizerJsonEntity {
 
 		if (jsonObject.has("owner")) {
 			owner = jsonObject.getString("owner");
+		}
+
+		if (jsonObject.has("group")) {
+			group = jsonObject.getString("group");
 		}
 
 		if (jsonObject.has("conflictState")) {
@@ -105,6 +111,14 @@ public class MobeelizerJsonEntity {
 
 	public void setOwner(final String owner) {
 		this.owner = owner;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public String getGroup() {
+		return group;
 	}
 
 	public Map<String, String> getFields() {
@@ -153,6 +167,7 @@ public class MobeelizerJsonEntity {
 		json.put("guid", guid);
 		json.put("resolveConflict", "false");
 		json.put("owner", owner);
+		json.put("group", group);
 		json.put("conflictState", conflictState == null ? ConflictState.NO_IN_CONFLICT : conflictState.name());
 
 		if (fields != null) {
