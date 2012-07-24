@@ -102,6 +102,15 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             request.setHeader("mas-user-name", login);
             request.setHeader("mas-user-password", password);
 
+            System.out.println("------------------ > authenticate 1");
+            // TODO MINA sure?
+            if (token != null) {
+                System.out.println("------------------ > with token -" + token + "-");
+                request.getParams().setParameter("deviceToken", token).setParameter("deviceType", "android");
+            }
+
+            System.out.println("------------------ > authenticate 2");
+
             JSONObject json = executeAndGetJsonObject(request).getJSONObject("content");
 
             return new MobeelizerAuthenticateResponseImpl(json.getString("role"), json.getString("instanceGuid"));
