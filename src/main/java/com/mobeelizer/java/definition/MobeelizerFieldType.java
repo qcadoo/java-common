@@ -23,6 +23,7 @@ package com.mobeelizer.java.definition;
 import java.util.Map;
 import java.util.Set;
 
+import com.mobeelizer.java.api.MobeelizerDatabaseExceptionBuilder;
 import com.mobeelizer.java.definition.type.helpers.MobeelizerBelongsToFieldTypeHelper;
 import com.mobeelizer.java.definition.type.helpers.MobeelizerBooleanFieldTypeHelper;
 import com.mobeelizer.java.definition.type.helpers.MobeelizerDateFieldTypeHelper;
@@ -67,7 +68,7 @@ public enum MobeelizerFieldType {
 
     public void setValueFromEntityToJsonEntity(final MobeelizerFieldAccessor field, final Object entity,
             final Map<String, String> values, final boolean required, final Map<String, String> options,
-            final MobeelizerErrorsHolder errors) {
+            final MobeelizerDatabaseExceptionBuilder errors) {
         helper.setValueFromEntityToJsonEntity(field, entity, values, required, options, errors);
     }
 
@@ -88,7 +89,7 @@ public enum MobeelizerFieldType {
     }
 
     public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
         return helper.convertFromEntityValueToJsonValue(field, value, options, errors);
     }
 
@@ -101,7 +102,7 @@ public enum MobeelizerFieldType {
     }
 
     public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
         return helper.convertFromEntityValueToDatabaseValue(field, value, options, errors);
     }
 

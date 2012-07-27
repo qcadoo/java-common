@@ -31,8 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import com.mobeelizer.java.api.MobeelizerDatabaseExceptionBuilder;
 import com.mobeelizer.java.api.MobeelizerFile;
-import com.mobeelizer.java.definition.MobeelizerErrorsHolder;
 import com.mobeelizer.java.definition.type.options.MobeelizerEmptyFieldOptions;
 import com.mobeelizer.java.definition.type.options.MobeelizerFieldOptions;
 import com.mobeelizer.java.model.MobeelizerFieldAccessor;
@@ -56,10 +56,11 @@ public class MobeelizerFileFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
     @Override
     protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
-            final MobeelizerFieldAccessor field, final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final MobeelizerFieldAccessor field, final Map<String, String> options,
+            final MobeelizerDatabaseExceptionBuilder errors) {
         String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
 
-        if (!errors.isValid()) {
+        if (!errors.hasNoErrors()) {
             return;
         }
 
@@ -68,7 +69,7 @@ public class MobeelizerFileFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
     @Override
     protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
         // empty
     }
 
@@ -175,7 +176,7 @@ public class MobeelizerFileFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
     @Override
     public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
         MobeelizerFile file = (MobeelizerFile) value;
 
         if (!validateValue(field, file, options, errors)) {
@@ -211,7 +212,7 @@ public class MobeelizerFileFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
     @Override
     public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
         MobeelizerFile file = (MobeelizerFile) value;
 
         if (!validateValue(field, file, options, errors)) {
@@ -223,7 +224,7 @@ public class MobeelizerFileFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
     @Override
     public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsHolder errors) {
+            final MobeelizerDatabaseExceptionBuilder errors) {
         return true;
     }
 

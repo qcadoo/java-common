@@ -22,9 +22,9 @@ package com.mobeelizer.java.model;
 
 import java.util.Map;
 
+import com.mobeelizer.java.api.MobeelizerDatabaseExceptionBuilder;
 import com.mobeelizer.java.api.MobeelizerField;
 import com.mobeelizer.java.api.MobeelizerFieldCredentials;
-import com.mobeelizer.java.definition.MobeelizerErrorsHolder;
 import com.mobeelizer.java.definition.MobeelizerFieldType;
 import com.mobeelizer.java.definition.MobeelizerModelFieldCredentialsDefinition;
 import com.mobeelizer.java.definition.MobeelizerModelFieldDefinition;
@@ -87,7 +87,7 @@ public class MobeelizerFieldImpl implements MobeelizerField {
     }
 
     public void setValueFromEntityToJsonEntity(final Object entity, final Map<String, String> values,
-            final MobeelizerErrorsHolder errors) {
+            final MobeelizerDatabaseExceptionBuilder errors) {
         type.setValueFromEntityToJsonEntity(field, entity, values, required, options, errors);
     }
 

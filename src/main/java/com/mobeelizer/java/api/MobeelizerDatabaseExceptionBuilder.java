@@ -1,38 +1,15 @@
-// 
-// MobeelizerErrorsHolder.java
-// 
-// Copyright (C) 2012 Mobeelizer Ltd. All Rights Reserved.
-//
-// Mobeelizer SDK is free software; you can redistribute it and/or modify it 
-// under the terms of the GNU Affero General Public License as published by 
-// the Free Software Foundation; either version 3 of the License, or (at your
-// option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
-// for more details.
-//
-// You should have received a copy of the GNU Affero General Public License 
-// along with this program; if not, write to the Free Software Foundation, Inc., 
-// 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-// 
-
-package com.mobeelizer.java.definition;
+package com.mobeelizer.java.api;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mobeelizer.java.api.MobeelizerError;
-import com.mobeelizer.java.api.MobeelizerErrorCode;
-import com.mobeelizer.java.api.MobeelizerErrors;
+public class MobeelizerDatabaseExceptionBuilder {
 
-public class MobeelizerErrorsHolder implements MobeelizerErrors {
+    private final Map<String, List<MobeelizerError>> errors = new HashMap<String, List<MobeelizerError>>();
 
     public static class MobeelizerErrorImpl implements MobeelizerError {
 
@@ -65,7 +42,9 @@ public class MobeelizerErrorsHolder implements MobeelizerErrors {
 
     }
 
-    private final Map<String, List<MobeelizerError>> errors = new HashMap<String, List<MobeelizerError>>();
+    public boolean hasNoErrors() {
+        return errors.isEmpty();
+    }
 
     public void addFieldCanNotBeEmpty(final String field) {
         addError(field, MobeelizerErrorCode.EMPTY, MobeelizerErrorCode.EMPTY.getMessage());
@@ -110,28 +89,14 @@ public class MobeelizerErrorsHolder implements MobeelizerErrors {
                 String.format(MobeelizerErrorCode.GREATER_THAN.getMessage(), minValue.toPlainString()), minValue);
     }
 
-    @Override
-    public boolean isFieldValid(final String field) {
-        return !errors.containsKey(field);
+    public void addNoCredentialsToPerformThisOperationOnModel(final String operation) {
+        addError(null, MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_ENTITY_OPERATION,
+                String.format(MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_ENTITY_OPERATION.getMessage(), operation), operation);
     }
 
-    @Override
-    public List<MobeelizerError> getFieldErrors(final String field) {
-        if (errors.containsKey(field)) {
-            return errors.get(field);
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    @Override
-    public List<MobeelizerError> getErrors() {
-        return getFieldErrors(null);
-    }
-
-    @Override
-    public boolean isValid() {
-        return errors.isEmpty();
+    public void addNoCredentialsToPerformFieldWriteOperation(final String field) {
+        addError(null, MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_FIELD_WRITE_OPERATION,
+                String.format(MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_FIELD_WRITE_OPERATION.getMessage(), field), field);
     }
 
     private void addError(final String field, final MobeelizerErrorCode code, final String message, final Object... args) {
@@ -140,6 +105,16 @@ public class MobeelizerErrorsHolder implements MobeelizerErrors {
         }
 
         errors.get(field).add(new MobeelizerErrorImpl(code, message, args));
+    }
+
+    public void throwWhenErrors() throws MobeelizerDatabaseException {
+        if (!hasNoErrors()) {
+            throw new MobeelizerDatabaseException(errors);
+        }
+    }
+
+    public MobeelizerDatabaseError build() {
+        return new MobeelizerDatabaseException(errors);
     }
 
 }

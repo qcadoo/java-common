@@ -24,7 +24,7 @@ import static com.mobeelizer.java.model.MobeelizerReflectionUtil.setValue;
 
 import java.util.Map;
 
-import com.mobeelizer.java.definition.MobeelizerErrorsHolder;
+import com.mobeelizer.java.api.MobeelizerDatabaseExceptionBuilder;
 import com.mobeelizer.java.definition.type.options.MobeelizerFieldOptions;
 import com.mobeelizer.java.definition.type.options.MobeelizerTextFieldOptions;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerIntegerFieldOptionTypeHelper;
@@ -47,7 +47,7 @@ public class MobeelizerTextFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
     @Override
     public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
         String stringValue = (String) value;
 
         if (!validateValue(field, stringValue, options, errors)) {
@@ -69,13 +69,13 @@ public class MobeelizerTextFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
     @Override
     public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
         return convertFromEntityValueToJsonValue(field, value, options, errors);
     }
 
     @Override
     public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsHolder errors) {
+            final MobeelizerDatabaseExceptionBuilder errors) {
         int maxLength = getMaxLength(options);
 
         if (((String) value).length() > maxLength) {
@@ -94,10 +94,11 @@ public class MobeelizerTextFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
     @Override
     protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
-            final MobeelizerFieldAccessor field, final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final MobeelizerFieldAccessor field, final Map<String, String> options,
+            final MobeelizerDatabaseExceptionBuilder errors) {
         String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
 
-        if (!errors.isValid()) {
+        if (!errors.hasNoErrors()) {
             return;
         }
 
@@ -106,7 +107,7 @@ public class MobeelizerTextFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
     @Override
     protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
-            final Map<String, String> options, final MobeelizerErrorsHolder errors) {
+            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
         // empty
     }
 

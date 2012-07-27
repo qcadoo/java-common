@@ -74,7 +74,21 @@ public enum MobeelizerErrorCode {
      * 
      * @since 1.0
      */
-    NOT_FOUND("Relation '%s' must exist.");
+    NOT_FOUND("Relation '%s' must exist."),
+
+    /**
+     * No permission to perform operation on entity.
+     * 
+     * @since 1.0
+     */
+    NO_CREDENTIALS_TO_PERFORM_ENTITY_OPERATION("No permission to perform '%s' operation on this entity."),
+
+    /**
+     * No permission to perform operation on field.
+     * 
+     * @since 1.0
+     */
+    NO_CREDENTIALS_TO_PERFORM_FIELD_WRITE_OPERATION("No permission to change field '%s'.");
 
     private final String message;
 
