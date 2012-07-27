@@ -89,14 +89,17 @@ public class MobeelizerDatabaseExceptionBuilder {
                 String.format(MobeelizerErrorCode.GREATER_THAN.getMessage(), minValue.toPlainString()), minValue);
     }
 
-    public void addNoCredentialsToPerformThisOperationOnModel(final String operation) {
-        addError(null, MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_ENTITY_OPERATION,
-                String.format(MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_ENTITY_OPERATION.getMessage(), operation), operation);
+    public void addNoCredentialsToPerformOperationOnModel(final String operation) {
+        addError(null, MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_MODEL,
+                String.format(MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_MODEL.getMessage(), operation), operation);
     }
 
-    public void addNoCredentialsToPerformFieldWriteOperation(final String field) {
-        addError(null, MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_FIELD_WRITE_OPERATION,
-                String.format(MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_FIELD_WRITE_OPERATION.getMessage(), field), field);
+    public void addNoCredentialsToPerformOperationOnField(final String field, final String operation) {
+        addError(
+                null,
+                MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_FIELD,
+                String.format(MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_FIELD.getMessage(), operation, field),
+                field);
     }
 
     private void addError(final String field, final MobeelizerErrorCode code, final String message, final Object... args) {
