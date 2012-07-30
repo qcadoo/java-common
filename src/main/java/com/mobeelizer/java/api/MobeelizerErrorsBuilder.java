@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MobeelizerDatabaseExceptionBuilder {
+public class MobeelizerErrorsBuilder {
 
     private final Map<String, List<MobeelizerError>> errors = new HashMap<String, List<MobeelizerError>>();
 
@@ -91,13 +91,12 @@ public class MobeelizerDatabaseExceptionBuilder {
 
     public void addNoCredentialsToPerformOperationOnModel(final String operation) {
         addError(null, MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_MODEL,
-                String.format(MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_MODEL.getMessage(), operation), operation);
+                String.format(MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_MODEL.getMessage(), operation),
+                operation);
     }
 
     public void addNoCredentialsToPerformOperationOnField(final String field, final String operation) {
-        addError(
-                null,
-                MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_FIELD,
+        addError(null, MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_FIELD,
                 String.format(MobeelizerErrorCode.NO_CREDENTIALS_TO_PERFORM_OPERATION_ON_FIELD.getMessage(), operation, field),
                 field);
     }
@@ -110,14 +109,11 @@ public class MobeelizerDatabaseExceptionBuilder {
         errors.get(field).add(new MobeelizerErrorImpl(code, message, args));
     }
 
-    public void throwWhenErrors() throws MobeelizerDatabaseException {
+    public MobeelizerErrors createWhenErrors() {
         if (!hasNoErrors()) {
-            throw new MobeelizerDatabaseException(errors);
+            return new MobeelizerErrorsImpl(errors);
         }
-    }
-
-    public MobeelizerDatabaseError build() {
-        return new MobeelizerDatabaseException(errors);
+        return null;
     }
 
 }

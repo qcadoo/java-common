@@ -3,7 +3,12 @@ package com.mobeelizer.java.api;
 import java.util.List;
 import java.util.Set;
 
-public interface MobeelizerDatabaseError {
+/**
+ * Holder for database operations errors.
+ * 
+ * @since 1.0
+ */
+public interface MobeelizerErrors {
 
     /**
      * Return the list of global errors.

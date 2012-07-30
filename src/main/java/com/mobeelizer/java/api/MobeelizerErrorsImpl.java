@@ -11,14 +11,11 @@ import java.util.Set;
  * 
  * @since 1.0
  */
-public class MobeelizerDatabaseException extends RuntimeException implements MobeelizerDatabaseError {
-
-    private static final long serialVersionUID = 2515367360699997642L;
+public class MobeelizerErrorsImpl implements MobeelizerErrors {
 
     private final Map<String, List<MobeelizerError>> errors;
 
-    MobeelizerDatabaseException(final Map<String, List<MobeelizerError>> errors) {
-        super(errorsToString(errors));
+    MobeelizerErrorsImpl(final Map<String, List<MobeelizerError>> errors) {
         this.errors = errors;
     }
 

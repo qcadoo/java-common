@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.mobeelizer.java.api.MobeelizerDatabaseExceptionBuilder;
+import com.mobeelizer.java.api.MobeelizerErrorsBuilder;
 import com.mobeelizer.java.api.MobeelizerField;
 import com.mobeelizer.java.api.MobeelizerModel;
 import com.mobeelizer.java.api.MobeelizerModelCredentials;
@@ -174,7 +174,7 @@ public class MobeelizerModelImpl implements MobeelizerModel {
         }
     }
 
-    public MobeelizerJsonEntity getJsonEntityFromEntity(final Object entity, final MobeelizerDatabaseExceptionBuilder errors) {
+    public MobeelizerJsonEntity getJsonEntityFromEntity(final Object entity, final MobeelizerErrorsBuilder errors) {
         MobeelizerJsonEntity json = new MobeelizerJsonEntity();
         json.setModel(name);
         json.setGuid((String) getValue(guidField, entity));

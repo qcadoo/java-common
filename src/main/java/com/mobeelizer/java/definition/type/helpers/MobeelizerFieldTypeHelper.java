@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.mobeelizer.java.api.MobeelizerDatabaseExceptionBuilder;
+import com.mobeelizer.java.api.MobeelizerErrorsBuilder;
 import com.mobeelizer.java.definition.type.options.MobeelizerFieldOptions;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerModelFieldOption;
 import com.mobeelizer.java.model.MobeelizerFieldAccessor;
@@ -55,21 +55,21 @@ public abstract class MobeelizerFieldTypeHelper {
             final Map<String, String> options);
 
     public abstract String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors);
+            final Map<String, String> options, final MobeelizerErrorsBuilder errors);
 
     public abstract Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value);
 
     public abstract Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value);
 
     public abstract Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors);
+            final Map<String, String> options, final MobeelizerErrorsBuilder errors);
 
     public abstract boolean validateValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors);
+            final Map<String, String> options, final MobeelizerErrorsBuilder errors);
 
     public void setValueFromEntityToJsonEntity(final MobeelizerFieldAccessor field, final Object entity,
             final Map<String, String> values, final boolean required, final Map<String, String> options,
-            final MobeelizerDatabaseExceptionBuilder errors) {
+            final MobeelizerErrorsBuilder errors) {
         Object value = getValue(field, entity);
 
         if (value == null && required) {
@@ -103,11 +103,11 @@ public abstract class MobeelizerFieldTypeHelper {
 
     protected abstract void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
             final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final MobeelizerDatabaseExceptionBuilder errors);
+            final MobeelizerErrorsBuilder errors);
 
     protected abstract void setNullValueFromEntityToJsonEntity(final Map<String, String> values,
             final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final MobeelizerDatabaseExceptionBuilder errors);
+            final MobeelizerErrorsBuilder errors);
 
     public abstract String validateAndNormalizeValue(final String value, final MobeelizerFieldOptions options);
 

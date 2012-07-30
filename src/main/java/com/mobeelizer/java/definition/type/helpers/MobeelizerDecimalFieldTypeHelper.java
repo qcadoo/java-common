@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.mobeelizer.java.api.MobeelizerDatabaseExceptionBuilder;
+import com.mobeelizer.java.api.MobeelizerErrorsBuilder;
 import com.mobeelizer.java.definition.type.options.MobeelizerDecimalFieldOptions;
 import com.mobeelizer.java.definition.type.options.MobeelizerFieldOptions;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerBooleanFieldOptionTypeHelper;
@@ -66,7 +66,7 @@ public class MobeelizerDecimalFieldTypeHelper extends MobeelizerFieldTypeHelper 
 
     @Override
     public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
+            final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
         Double doubleValue = ((Number) value).doubleValue();
 
         if (!validateValue(field, doubleValue, options, errors)) {
@@ -98,7 +98,7 @@ public class MobeelizerDecimalFieldTypeHelper extends MobeelizerFieldTypeHelper 
 
     @Override
     public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
+            final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
         Double doubleValue = ((Number) value).doubleValue();
 
         if (!validateValue(field, doubleValue, options, errors)) {
@@ -110,7 +110,7 @@ public class MobeelizerDecimalFieldTypeHelper extends MobeelizerFieldTypeHelper 
 
     @Override
     public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
-            final MobeelizerDatabaseExceptionBuilder errors) {
+            final MobeelizerErrorsBuilder errors) {
         Double doubleValue = (Double) value;
 
         boolean includeMaxValue = getIncludeMaxValue(options);
@@ -160,7 +160,7 @@ public class MobeelizerDecimalFieldTypeHelper extends MobeelizerFieldTypeHelper 
     @Override
     protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
             final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final MobeelizerDatabaseExceptionBuilder errors) {
+            final MobeelizerErrorsBuilder errors) {
         String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
 
         if (!errors.hasNoErrors()) {
@@ -172,7 +172,7 @@ public class MobeelizerDecimalFieldTypeHelper extends MobeelizerFieldTypeHelper 
 
     @Override
     protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
-            final Map<String, String> options, final MobeelizerDatabaseExceptionBuilder errors) {
+            final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
         // empty
     }
 
