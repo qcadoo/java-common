@@ -24,15 +24,22 @@ import java.util.regex.Pattern;
 
 public class MobeelizerIntegerFieldOptionTypeHelper implements MobeelizerModelFieldOptionTypeHelper {
 
-    private static final Pattern integerPattern = Pattern.compile("-?[0-9]+");
+	private static final Pattern integerPattern = Pattern.compile("-?[0-9]+");
 
-    @Override
-    public Object getValue(final String value) {
-        return Integer.valueOf(value.trim());
-    }
+	@Override
+	public Object getValue(final String value) {
+		if (!validate(value)) {
+			throw new IllegalStateException("Field must be integer");
+		}
+		if (value.trim().length() > 10) {
+			throw new IllegalStateException("Field value is too big");
+		}
+		return Integer.valueOf(value.trim());
+	}
 
-    @Override
-    public boolean validate(final String value) {
-        return integerPattern.matcher(value.trim()).matches();
-    }
+	@Override
+	public boolean validate(final String value) {
+		return integerPattern.matcher(value.trim()).matches();
+	}
+
 }
