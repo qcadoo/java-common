@@ -23,7 +23,6 @@ package com.mobeelizer.java.definition.type.helpers;
 import static com.mobeelizer.java.model.MobeelizerReflectionUtil.setValue;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import com.mobeelizer.java.api.MobeelizerErrorsBuilder;
 import com.mobeelizer.java.definition.type.options.MobeelizerBelongsToFieldOptions;
@@ -32,11 +31,9 @@ import com.mobeelizer.java.definition.type.options.type.MobeelizerBelongsToField
 import com.mobeelizer.java.definition.type.options.type.MobeelizerBooleanFieldOptionTypeHelper;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerModelFieldOption;
 import com.mobeelizer.java.model.MobeelizerFieldAccessor;
-import com.mobeelizer.java.sync.MobeelizerJsonEntity;
+import com.mobeelizer.java.util.ValidationUtil;
 
 public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelper {
-
-    private static final Pattern uuidPattern = Pattern.compile(MobeelizerJsonEntity.UUID_PATTERN);
 
     public static final String ANALYZE_CONFLICT = "analyzeConflict";
 
@@ -98,8 +95,7 @@ public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelpe
 
     @Override
     protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
-            final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final MobeelizerErrorsBuilder errors) {
+            final MobeelizerFieldAccessor field, final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
         String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
 
         if (!errors.hasNoErrors()) {
@@ -129,7 +125,7 @@ public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelpe
 
     @Override
     public String validateAndNormalizeValue(final String value, final MobeelizerFieldOptions options) {
-        if (!uuidPattern.matcher(value).matches()) {
+        if (!ValidationUtil.isValidGuid(value)) {
             throw new IllegalStateException("Illegal guid value: " + value);
         }
 

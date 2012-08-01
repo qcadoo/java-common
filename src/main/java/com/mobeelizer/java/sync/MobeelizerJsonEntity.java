@@ -23,173 +23,170 @@ package com.mobeelizer.java.sync;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mobeelizer.java.util.ValidationUtil;
+
 public class MobeelizerJsonEntity {
 
-	public enum ConflictState {
-		NO_IN_CONFLICT, IN_CONFLICT_BECAUSE_OF_YOU, IN_CONFLICT
-	}
+    public enum ConflictState {
+        NO_IN_CONFLICT, IN_CONFLICT_BECAUSE_OF_YOU, IN_CONFLICT
+    }
 
-	public static final String UUID_PATTERN = "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}";
+    private Map<String, String> fields;
 
-	private static final Pattern uuidPattern = Pattern.compile(UUID_PATTERN);
+    private String model;
 
-	private Map<String, String> fields;
+    private String guid;
 
-	private String model;
+    private ConflictState conflictState;
 
-	private String guid;
+    private String owner;
 
-	private ConflictState conflictState;
+    private String group;
 
-	private String owner;
+    public MobeelizerJsonEntity() {
+        // empty
+    }
 
-	private String group;
+    @SuppressWarnings("unchecked")
+    public MobeelizerJsonEntity(final String json) throws JSONException {
+        JSONObject jsonObject = new JSONObject(json);
+        model = jsonObject.getString("model");
+        guid = jsonObject.getString("guid");
 
-	public MobeelizerJsonEntity() {
-		// empty
-	}
+        if (jsonObject.has("owner")) {
+            owner = jsonObject.getString("owner");
+        }
 
-	@SuppressWarnings("unchecked")
-	public MobeelizerJsonEntity(final String json) throws JSONException {
-		JSONObject jsonObject = new JSONObject(json);
-		model = jsonObject.getString("model");
-		guid = jsonObject.getString("guid");
+        if (jsonObject.has("group")) {
+            group = jsonObject.getString("group");
+        }
 
-		if (jsonObject.has("owner")) {
-			owner = jsonObject.getString("owner");
-		}
+        if (jsonObject.has("conflictState")) {
+            conflictState = ConflictState.valueOf(jsonObject.getString("conflictState"));
+        } else {
+            conflictState = ConflictState.NO_IN_CONFLICT;
+        }
 
-		if (jsonObject.has("group")) {
-			group = jsonObject.getString("group");
-		}
+        if (jsonObject.has("fields")) {
+            JSONObject jsonFields = jsonObject.getJSONObject("fields");
+            Iterator<String> keys = jsonFields.keys();
+            fields = new HashMap<String, String>();
 
-		if (jsonObject.has("conflictState")) {
-			conflictState = ConflictState.valueOf(jsonObject.getString("conflictState"));
-		} else {
-			conflictState = ConflictState.NO_IN_CONFLICT;
-		}
+            while (keys.hasNext()) {
+                String key = keys.next();
+                fields.put(key, jsonFields.isNull(key) ? null : jsonFields.getString(key));
+            }
+        }
+    }
 
-		if (jsonObject.has("fields")) {
-			JSONObject jsonFields = jsonObject.getJSONObject("fields");
-			Iterator<String> keys = jsonFields.keys();
-			fields = new HashMap<String, String>();
+    public void setModel(final String model) {
+        this.model = model;
+    }
 
-			while (keys.hasNext()) {
-				String key = keys.next();
-				fields.put(key, jsonFields.isNull(key) ? null : jsonFields.getString(key));
-			}
-		}
-	}
+    public String getModel() {
+        return model;
+    }
 
-	public void setModel(final String model) {
-		this.model = model;
-	}
+    public String getGuid() {
+        return guid;
+    }
 
-	public String getModel() {
-		return model;
-	}
+    public void setGuid(final String guid) {
+        if (!ValidationUtil.isValidGuid(guid)) {
+            throw new IllegalStateException("Illegal guid value: " + guid);
+        }
+        this.guid = guid;
+    }
 
-	public String getGuid() {
-		return guid;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public void setGuid(final String guid) {
-		if (!uuidPattern.matcher(guid).matches()) {
-			throw new IllegalStateException("Illegal guid value: " + guid);
-		}
-		this.guid = guid;
-	}
+    public void setOwner(final String owner) {
+        this.owner = owner;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public void setGroup(final String group) {
+        this.group = group;
+    }
 
-	public void setOwner(final String owner) {
-		this.owner = owner;
-	}
+    public String getGroup() {
+        return group;
+    }
 
-	public void setGroup(String group) {
-		this.group = group;
-	}
+    public Map<String, String> getFields() {
+        return fields;
+    }
 
-	public String getGroup() {
-		return group;
-	}
+    public void setFields(final Map<String, String> fields) {
+        this.fields = fields;
+    }
 
-	public Map<String, String> getFields() {
-		return fields;
-	}
+    public boolean containsValue(final String field) {
+        return fields == null ? false : fields.containsKey(field);
+    }
 
-	public void setFields(final Map<String, String> fields) {
-		this.fields = fields;
-	}
+    public String getValue(final String field) {
+        return fields == null ? null : fields.get(field);
+    }
 
-	public boolean containsValue(final String field) {
-		return fields == null ? false : fields.containsKey(field);
-	}
+    public ConflictState getConflictState() {
+        return conflictState;
+    }
 
-	public String getValue(final String field) {
-		return fields == null ? null : fields.get(field);
-	}
+    public void setConflictState(final ConflictState conflictState) {
+        this.conflictState = conflictState;
+    }
 
-	public ConflictState getConflictState() {
-		return conflictState;
-	}
+    public boolean isDeleted() {
+        String deleted = getValue("s_deleted");
 
-	public void setConflictState(final ConflictState conflictState) {
-		this.conflictState = conflictState;
-	}
+        if (deleted == null) {
+            throw new IllegalStateException("Cannot find s_deleted field in " + getGuid() + ": " + fields);
+        }
 
-	public boolean isDeleted() {
-		String deleted = getValue("s_deleted");
+        if ("true".equals(deleted)) {
+            return true;
+        } else if ("false".equals(deleted)) {
+            return false;
+        }
 
-		if (deleted == null) {
-			throw new IllegalStateException("Cannot find s_deleted field in " + getGuid() + ": " + fields);
-		}
+        throw new IllegalStateException("Illegal value '" + deleted + "' of s_deleted field in " + getGuid());
+    }
 
-		if ("true".equals(deleted)) {
-			return true;
-		} else if ("false".equals(deleted)) {
-			return false;
-		}
+    public String getJson() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("model", model);
+        json.put("guid", guid);
+        json.put("resolveConflict", "false");
+        json.put("owner", owner);
+        json.put("group", group);
+        json.put("conflictState", conflictState == null ? ConflictState.NO_IN_CONFLICT : conflictState.name());
 
-		throw new IllegalStateException("Illegal value '" + deleted + "' of s_deleted field in " + getGuid());
-	}
+        if (fields != null) {
+            JSONObject jsonFields = new JSONObject();
 
-	public String getJson() throws JSONException {
-		JSONObject json = new JSONObject();
-		json.put("model", model);
-		json.put("guid", guid);
-		json.put("resolveConflict", "false");
-		json.put("owner", owner);
-		json.put("group", group);
-		json.put("conflictState", conflictState == null ? ConflictState.NO_IN_CONFLICT : conflictState.name());
+            for (Map.Entry<String, String> field : fields.entrySet()) {
+                jsonFields.put(field.getKey(), field.getValue());
+            }
 
-		if (fields != null) {
-			JSONObject jsonFields = new JSONObject();
+            json.put("fields", jsonFields);
+        }
 
-			for (Map.Entry<String, String> field : fields.entrySet()) {
-				jsonFields.put(field.getKey(), field.getValue());
-			}
+        return json.toString();
+    }
 
-			json.put("fields", jsonFields);
-		}
-
-		return json.toString();
-	}
-
-	@Override
-	public String toString() {
-		try {
-			return getJson();
-		} catch (JSONException e) {
-			return "invalid json";
-		}
-	}
+    @Override
+    public String toString() {
+        try {
+            return getJson();
+        } catch (JSONException e) {
+            return "invalid json";
+        }
+    }
 
 }
