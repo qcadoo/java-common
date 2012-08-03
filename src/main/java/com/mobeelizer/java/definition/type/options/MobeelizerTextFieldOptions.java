@@ -22,47 +22,47 @@ package com.mobeelizer.java.definition.type.options;
 
 public class MobeelizerTextFieldOptions implements MobeelizerFieldOptions {
 
-    private static final long serialVersionUID = 8632797810027283427L;
+	private static final long serialVersionUID = 8632797810027283427L;
 
-    private int maxLength = 4096;
+	private int maxLength = 255;
 
-    public int getMaxLength() {
-        return maxLength;
-    }
+	public int getMaxLength() {
+		return maxLength;
+	}
 
-    public void setMaxLength(final int maxLength) {
-        this.maxLength = maxLength;
-    }
+	public void setMaxLength(final int maxLength) {
+		this.maxLength = maxLength;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + maxLength;
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + maxLength;
+		return result;
+	}
 
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof MobeelizerTextFieldOptions)) {
-            return false;
-        }
-        MobeelizerTextFieldOptions other = (MobeelizerTextFieldOptions) obj;
-        if (maxLength != other.maxLength) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof MobeelizerTextFieldOptions)) {
+			return false;
+		}
+		MobeelizerTextFieldOptions other = (MobeelizerTextFieldOptions) obj;
+		if (maxLength != other.maxLength) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        return "TextModelFieldOptions [maxLength=" + maxLength + "]";
-    }
+	@Override
+	public String toString() {
+		return "TextModelFieldOptions [maxLength=" + maxLength + "]";
+	}
 
 }

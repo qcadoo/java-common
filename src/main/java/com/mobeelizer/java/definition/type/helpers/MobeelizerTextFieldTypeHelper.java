@@ -33,130 +33,130 @@ import com.mobeelizer.java.model.MobeelizerFieldAccessor;
 
 public class MobeelizerTextFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
-    public static final String MAX_LENGTH = "maxLength";
+	public static final String MAX_LENGTH = "maxLength";
 
-    public MobeelizerTextFieldTypeHelper() {
-        super(String.class);
-        addOption(new MobeelizerModelFieldOption(MAX_LENGTH, new MobeelizerIntegerFieldOptionTypeHelper(), false));
-    }
+	public MobeelizerTextFieldTypeHelper() {
+		super(String.class);
+		addOption(new MobeelizerModelFieldOption(MAX_LENGTH, new MobeelizerIntegerFieldOptionTypeHelper(), false));
+	}
 
-    @Override
-    public Class<?> getDefaultAccessibleType() {
-        return String.class;
-    }
+	@Override
+	public Class<?> getDefaultAccessibleType() {
+		return String.class;
+	}
 
-    @Override
-    public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
-        String stringValue = (String) value;
+	@Override
+	public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
+			final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
+		String stringValue = (String) value;
 
-        if (!validateValue(field, stringValue, options, errors)) {
-            return null;
-        }
+		if (!validateValue(field, stringValue, options, errors)) {
+			return null;
+		}
 
-        return stringValue;
-    }
+		return stringValue;
+	}
 
-    @Override
-    public Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value) {
-        return value;
-    }
+	@Override
+	public Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value) {
+		return value;
+	}
 
-    @Override
-    public Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value) {
-        return value;
-    }
+	@Override
+	public Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value) {
+		return value;
+	}
 
-    @Override
-    public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
-        return convertFromEntityValueToJsonValue(field, value, options, errors);
-    }
+	@Override
+	public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
+			final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
+		return convertFromEntityValueToJsonValue(field, value, options, errors);
+	}
 
-    @Override
-    public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsBuilder errors) {
-        int maxLength = getMaxLength(options);
+	@Override
+	public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
+			final MobeelizerErrorsBuilder errors) {
+		int maxLength = getMaxLength(options);
 
-        if (((String) value).length() > maxLength) {
-            errors.addFieldIsTooLong(field.getName(), maxLength);
-            return false;
-        }
+		if (((String) value).length() > maxLength) {
+			errors.addFieldIsTooLong(field.getName(), maxLength);
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public Object convertDefaultValue(final MobeelizerFieldAccessor field, final String defaultValue,
-            final Map<String, String> options) {
-        return defaultValue;
-    }
+	@Override
+	public Object convertDefaultValue(final MobeelizerFieldAccessor field, final String defaultValue,
+			final Map<String, String> options) {
+		return defaultValue;
+	}
 
-    @Override
-    protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
-            final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final MobeelizerErrorsBuilder errors) {
-        String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
+	@Override
+	protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
+			final MobeelizerFieldAccessor field, final Map<String, String> options,
+			final MobeelizerErrorsBuilder errors) {
+		String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
 
-        if (!errors.hasNoErrors()) {
-            return;
-        }
+		if (!errors.hasNoErrors()) {
+			return;
+		}
 
-        values.put(field.getName(), stringValue);
-    }
+		values.put(field.getName(), stringValue);
+	}
 
-    @Override
-    protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
-            final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
-        // empty
-    }
+	@Override
+	protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
+			final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
+		// empty
+	}
 
-    @Override
-    protected void setNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final Object entity) {
-        // empty
-    }
+	@Override
+	protected void setNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final Map<String, String> options,
+			final Object entity) {
+		// empty
+	}
 
-    @Override
-    protected void setNotNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final String value,
-            final Map<String, String> options, final Object entity) {
-        setValue(field, entity, convertFromJsonValueToEntityValue(field, value));
-    }
+	@Override
+	protected void setNotNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final String value,
+			final Map<String, String> options, final Object entity) {
+		setValue(field, entity, convertFromJsonValueToEntityValue(field, value));
+	}
 
-    private int getMaxLength(final Map<String, String> options) {
-        return options.containsKey("maxLength") ? Integer.valueOf(options.get("maxLength")) : 4096;
-    }
+	private int getMaxLength(final Map<String, String> options) {
+		return options.containsKey("maxLength") ? Integer.valueOf(options.get("maxLength")) : 255;
+	}
 
-    @Override
-    public String validateAndNormalizeValue(final String value, final MobeelizerFieldOptions options) {
-        MobeelizerTextFieldOptions textOptions = (MobeelizerTextFieldOptions) options;
+	@Override
+	public String validateAndNormalizeValue(final String value, final MobeelizerFieldOptions options) {
+		MobeelizerTextFieldOptions textOptions = (MobeelizerTextFieldOptions) options;
 
-        if (value.length() > textOptions.getMaxLength()) {
-            throw new IllegalStateException("Text is too long, max length is " + textOptions.getMaxLength());
-        }
+		if (value.length() > textOptions.getMaxLength()) {
+			throw new IllegalStateException("Text is too long, max length is " + textOptions.getMaxLength());
+		}
 
-        return value;
-    }
+		return value;
+	}
 
-    @Override
-    protected Class<? extends MobeelizerFieldOptions> getOptionObjectClass() {
-        return MobeelizerTextFieldOptions.class;
-    }
+	@Override
+	protected Class<? extends MobeelizerFieldOptions> getOptionObjectClass() {
+		return MobeelizerTextFieldOptions.class;
+	}
 
-    @Override
-    public void validateOptions(final Map<String, String> clientOptionsMap) {
-        super.validateOptions(clientOptionsMap);
+	@Override
+	public void validateOptions(final Map<String, String> clientOptionsMap) {
+		super.validateOptions(clientOptionsMap);
 
-        MobeelizerTextFieldOptions options = (MobeelizerTextFieldOptions) getOptions(clientOptionsMap);
+		MobeelizerTextFieldOptions options = (MobeelizerTextFieldOptions) getOptions(clientOptionsMap);
 
-        if (options.getMaxLength() <= 0) {
-            throw new IllegalStateException("Max length must be a positive integer.");
-        }
-    }
+		if (options.getMaxLength() <= 0) {
+			throw new IllegalStateException("Max length must be a positive integer.");
+		}
+	}
 
-    @Override
-    public Object parseValue(final String value, final MobeelizerFieldOptions options) {
-        return value;
-    }
+	@Override
+	public Object parseValue(final String value, final MobeelizerFieldOptions options) {
+		return value;
+	}
 
 }
