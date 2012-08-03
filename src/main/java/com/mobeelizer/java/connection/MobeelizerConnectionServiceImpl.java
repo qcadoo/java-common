@@ -51,6 +51,9 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +65,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
     private static final String DEFAULT_TEST_URL = "https://cloud.mobeelizer.com/sync";
 
-    private static final String DEFAULT_PRODUCTION_URL = DEFAULT_TEST_URL;
+    private static final String DEFAULT_PRODUCTION_URL = "https://cloud.mobeelizer.com/sync";
 
     private final MobeelizerConnectionServiceDelegate delegate;
 
@@ -384,7 +387,10 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
     }
 
     private HttpClient httpClient() {
-        return new DefaultHttpClient();
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(params, 10000);
+        HttpConnectionParams.setSoTimeout(params, 10000);
+        return new DefaultHttpClient(params);
     }
 
     private JSONObject executeAndGetJsonObject(final HttpRequestBase request) throws IOException {
