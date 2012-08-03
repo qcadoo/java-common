@@ -32,54 +32,25 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.conn.params.ConnManagerPNames;
-import org.apache.http.conn.params.ConnPerRouteBean;
-import org.apache.http.conn.scheme.LayeredSocketFactory;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -413,49 +384,8 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 	}
 
 	private HttpClient httpClient() {
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		schemeRegistry.register(new Scheme("https", new
-				EasySSLSocketFactory(), 443));
-
-		HttpParams params = new BasicHttpParams();
-		params.setParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS, 30);
-		params.setParameter(ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE, new ConnPerRouteBean(30));
-		params.setParameter(HttpProtocolParams.USE_EXPECT_CONTINUE, false);
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-		HttpConnectionParams.setSoTimeout(params, 10000);
-		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-
-		ClientConnectionManager cm = new SingleClientConnManager(params, schemeRegistry);
-
-		return new DefaultHttpClient(cm, params);
+		return new DefaultHttpClient();
 	}
-
-	//
-	// public static void main(String[] args) throws Exception {
-	// HttpClient client = new
-	// MobeelizerConnectionServiceImpl(null).httpClient();
-	//
-	// HttpUriRequest request = new
-	// HttpGet("https://cloud.mobeelizer.com/sync/demos/create");
-	//
-	// HttpResponse response = client.execute(request);
-	//
-	// System.out.println(response.getStatusLine());
-	//
-	// if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-	// return;
-	// }
-	//
-	// HttpEntity entity = response.getEntity();
-	//
-	// if (entity == null) {
-	// System.out.println("Connection failure: entity not found.");
-	// return;
-	// }
-	//
-	// System.out.println(EntityUtils.toString(entity));
-	// }
 
 	private JSONObject executeAndGetJsonObject(final HttpRequestBase request) throws IOException {
 		HttpClient client = httpClient();
@@ -580,116 +510,6 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 			}
 			client.getConnectionManager().shutdown();
 		}
-	}
-
-}
-
-class EasySSLSocketFactory implements LayeredSocketFactory {
-
-	private SSLContext sslcontext = null;
-
-	private static SSLContext createEasySSLContext() throws IOException {
-		try {
-			SSLContext context = SSLContext.getInstance("TLS");
-			context.init(null, new TrustManager[] { new EasyX509TrustManager(null) }, null);
-			return context;
-		} catch (Exception e) {
-			throw new IOException(e.getMessage());
-		}
-	}
-
-	private SSLContext getSSLContext() throws IOException {
-		if (this.sslcontext == null) {
-			this.sslcontext = createEasySSLContext();
-		}
-		return this.sslcontext;
-	}
-
-	@Override
-	public Socket connectSocket(Socket sock, String host, int port,
-			InetAddress localAddress, int localPort, HttpParams params)
-			throws IOException, UnknownHostException, ConnectTimeoutException {
-		int connTimeout = HttpConnectionParams.getConnectionTimeout(params);
-		int soTimeout = HttpConnectionParams.getSoTimeout(params);
-
-		InetSocketAddress remoteAddress = new InetSocketAddress(host, port);
-		SSLSocket sslsock = (SSLSocket) ((sock != null) ? sock : createSocket());
-
-		if ((localAddress != null) || (localPort > 0)) {
-			// we need to bind explicitly
-			if (localPort < 0) {
-				localPort = 0; // indicates "any"
-			}
-			InetSocketAddress isa = new InetSocketAddress(localAddress,
-					localPort);
-			sslsock.bind(isa);
-		}
-
-		sslsock.connect(remoteAddress, connTimeout);
-		sslsock.setSoTimeout(soTimeout);
-		return sslsock;
-
-	}
-
-	@Override
-	public Socket createSocket() throws IOException {
-		return getSSLContext().getSocketFactory().createSocket();
-	}
-
-	@Override
-	public boolean isSecure(Socket socket) throws IllegalArgumentException {
-		return true;
-	}
-
-	@Override
-	public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
-		return getSSLContext().getSocketFactory().createSocket(socket, host, port, autoClose);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return ((obj != null) && obj.getClass().equals(EasySSLSocketFactory.class));
-	}
-
-	@Override
-	public int hashCode() {
-		return EasySSLSocketFactory.class.hashCode();
-	}
-
-}
-
-class EasyX509TrustManager implements X509TrustManager {
-
-	private X509TrustManager standardTrustManager = null;
-
-	public EasyX509TrustManager(KeyStore keystore) throws NoSuchAlgorithmException, KeyStoreException {
-		super();
-		TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-		factory.init(keystore);
-		TrustManager[] trustmanagers = factory.getTrustManagers();
-		if (trustmanagers.length == 0) {
-			throw new NoSuchAlgorithmException("no trust manager found");
-		}
-		this.standardTrustManager = (X509TrustManager) trustmanagers[0];
-	}
-
-	@Override
-	public void checkClientTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
-		standardTrustManager.checkClientTrusted(certificates, authType);
-	}
-
-	@Override
-	public void checkServerTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
-		if ((certificates != null) && (certificates.length == 1)) {
-			certificates[0].checkValidity();
-		} else {
-			standardTrustManager.checkServerTrusted(certificates, authType);
-		}
-	}
-
-	@Override
-	public X509Certificate[] getAcceptedIssuers() {
-		return this.standardTrustManager.getAcceptedIssuers();
 	}
 
 }
