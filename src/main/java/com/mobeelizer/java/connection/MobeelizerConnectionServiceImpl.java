@@ -49,7 +49,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.InputStreamBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -60,6 +59,7 @@ import org.json.JSONObject;
 
 import com.mobeelizer.java.api.MobeelizerMode;
 import com.mobeelizer.java.api.user.MobeelizerUser;
+import com.mobeelizer.java.connection.test.MyHttpClient;
 
 public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionService {
 
@@ -387,10 +387,13 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
     }
 
     private HttpClient httpClient() {
+        System.out.println("-------------------------------------------");
+        System.out.println("          OBTAINING HTTP CLIENT");
+        System.out.println("-------------------------------------------");
         HttpParams params = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(params, 10000);
         HttpConnectionParams.setSoTimeout(params, 10000);
-        return new DefaultHttpClient();
+        return new MyHttpClient(params);
     }
 
     private JSONObject executeAndGetJsonObject(final HttpRequestBase request) throws IOException {
