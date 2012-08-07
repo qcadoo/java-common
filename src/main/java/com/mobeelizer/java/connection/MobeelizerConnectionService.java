@@ -29,37 +29,40 @@ import com.mobeelizer.java.api.user.MobeelizerUser;
 
 public interface MobeelizerConnectionService {
 
-    MobeelizerAuthenticateResponse authenticate(final String login, final String password) throws IOException;
+	MobeelizerAuthenticateResponse authenticate(final String login, final String password) throws IOException;
 
-    MobeelizerAuthenticateResponse authenticate(final String user, final String password, final String token) throws IOException;
+	@Deprecated
+	MobeelizerAuthenticateResponse authenticate(final String user, final String password, final String token) throws IOException;
 
-    List<String> getGroups() throws IOException;
+	MobeelizerAuthenticateResponse authenticate(final String user, final String password, final String deviceType, final String deviceToken) throws IOException;
 
-    List<MobeelizerUser> getUsers() throws IOException;
+	List<String> getGroups() throws IOException;
 
-    MobeelizerUser getUser(final String login) throws IOException;
+	List<MobeelizerUser> getUsers() throws IOException;
 
-    void createUser(final MobeelizerUser user) throws IOException;
+	MobeelizerUser getUser(final String login) throws IOException;
 
-    void updateUser(final MobeelizerUser user) throws IOException;
+	void createUser(final MobeelizerUser user) throws IOException;
 
-    boolean deleteUser(final String login) throws IOException;
+	void updateUser(final MobeelizerUser user) throws IOException;
 
-    String sendSyncAllRequest() throws IOException;
+	boolean deleteUser(final String login) throws IOException;
 
-    String sendSyncDiffRequest(final File outputFile) throws IOException;
+	String sendSyncAllRequest() throws IOException;
 
-    MobeelizerConnectionResult waitUntilSyncRequestComplete(final String ticket) throws IOException;
+	String sendSyncDiffRequest(final File outputFile) throws IOException;
 
-    File getSyncData(final String ticket) throws IOException;
+	MobeelizerConnectionResult waitUntilSyncRequestComplete(final String ticket) throws IOException;
 
-    void confirmTask(final String ticket) throws IOException;
+	File getSyncData(final String ticket) throws IOException;
 
-    void registerForRemoteNotifications(final String token) throws IOException;
+	void confirmTask(final String ticket) throws IOException;
 
-    void unregisterForRemoteNotifications(final String token) throws IOException;
+	void registerForRemoteNotifications(final String token) throws IOException;
 
-    void sendRemoteNotification(final String device, final String group, final List<String> users,
-            final Map<String, String> notification) throws IOException;
+	void unregisterForRemoteNotifications(final String token) throws IOException;
+
+	void sendRemoteNotification(final String device, final String group, final List<String> users,
+			final Map<String, String> notification) throws IOException;
 
 }
