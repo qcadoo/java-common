@@ -171,7 +171,12 @@ public class MobeelizerJsonEntity {
             JSONObject jsonFields = new JSONObject();
 
             for (Map.Entry<String, String> field : fields.entrySet()) {
-                jsonFields.put(field.getKey(), field.getValue());
+
+                if (field.getValue() == null) {
+                    jsonFields.put(field.getKey(), JSONObject.NULL);
+                } else {
+                    jsonFields.put(field.getKey(), field.getValue());
+                }
             }
 
             json.put("fields", jsonFields);

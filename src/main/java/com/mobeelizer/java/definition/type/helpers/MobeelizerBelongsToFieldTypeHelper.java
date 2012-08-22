@@ -108,7 +108,7 @@ public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelpe
     @Override
     protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
             final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
-        // empty
+        values.put(field.getName(), null);
     }
 
     @Override

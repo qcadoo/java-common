@@ -88,8 +88,7 @@ public class MobeelizerBooleanFieldTypeHelper extends MobeelizerFieldTypeHelper 
 
     @Override
     protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
-            final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final MobeelizerErrorsBuilder errors) {
+            final MobeelizerFieldAccessor field, final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
         String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
 
         if (!errors.hasNoErrors()) {
@@ -102,7 +101,7 @@ public class MobeelizerBooleanFieldTypeHelper extends MobeelizerFieldTypeHelper 
     @Override
     protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
             final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
-        // empty
+        values.put(field.getName(), null);
     }
 
     @Override
