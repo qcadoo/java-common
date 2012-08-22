@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import com.mobeelizer.java.api.MobeelizerErrorsBuilder;
 import com.mobeelizer.java.api.MobeelizerFile;
@@ -39,193 +38,189 @@ import com.mobeelizer.java.model.MobeelizerFieldAccessor;
 
 public class MobeelizerFileFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
-    public MobeelizerFileFieldTypeHelper() {
-        super(MobeelizerFile.class);
-    }
+	public MobeelizerFileFieldTypeHelper() {
+		super(MobeelizerFile.class);
+	}
 
-    @Override
-    public Object convertDefaultValue(final MobeelizerFieldAccessor field, final String defaultValue,
-            final Map<String, String> options) {
-        return null;
-    }
+	@Override
+	public Object convertDefaultValue(final MobeelizerFieldAccessor field, final String defaultValue,
+			final Map<String, String> options) {
+		return null;
+	}
 
-    @Override
-    public Class<?> getDefaultAccessibleType() {
-        return MobeelizerFile.class;
-    }
+	@Override
+	public Class<?> getDefaultAccessibleType() {
+		return MobeelizerFile.class;
+	}
 
-    @Override
-    protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
-            final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final MobeelizerErrorsBuilder errors) {
-        String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
+	@Override
+	protected void setNotNullFromEntityToJsonEntity(final Map<String, String> values, final Object value,
+			final MobeelizerFieldAccessor field, final Map<String, String> options,
+			final MobeelizerErrorsBuilder errors) {
+		String stringValue = convertFromEntityValueToJsonValue(field, value, options, errors);
 
-        if (!errors.hasNoErrors()) {
-            return;
-        }
+		if (!errors.hasNoErrors()) {
+			return;
+		}
 
-        values.put(field.getName(), stringValue);
-    }
+		values.put(field.getName(), stringValue);
+	}
 
-    @Override
-    protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
-            final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
-        // empty
-    }
+	@Override
+	protected void setNullValueFromEntityToJsonEntity(final Map<String, String> values, final MobeelizerFieldAccessor field,
+			final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
+		// empty
+	}
 
-    @Override
-    protected void setNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final Map<String, String> options,
-            final Object entity) {
-        // empty
-    }
+	@Override
+	protected void setNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final Map<String, String> options,
+			final Object entity) {
+		// empty
+	}
 
-    @Override
-    protected void setNotNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final String value,
-            final Map<String, String> options, final Object entity) {
-        setValue(field, entity, convertFromJsonValueToEntityValue(field, value));
-    }
+	@Override
+	protected void setNotNullValueFromJsonEntityToEntity(final MobeelizerFieldAccessor field, final String value,
+			final Map<String, String> options, final Object entity) {
+		setValue(field, entity, convertFromJsonValueToEntityValue(field, value));
+	}
 
-    private static final Pattern uuidPattern = Pattern
-            .compile("^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}");
+	private static final Pattern uuidPattern = Pattern
+			.compile("^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}");
 
-    @Override
-    public String validateAndNormalizeValue(final String value, final MobeelizerFieldOptions options) {
-        MobeelizerFileValue fileValue = new MobeelizerFileValue(value);
+	@Override
+	public String validateAndNormalizeValue(final String value, final MobeelizerFieldOptions options) {
+		MobeelizerFileValue fileValue = new MobeelizerFileValue(value);
 
-        if (fileValue.getName() == null || "".equals(fileValue.getName().trim())) {
-            throw new IllegalStateException("Missing filename.");
-        }
+		if (fileValue.getName() == null || "".equals(fileValue.getName().trim())) {
+			throw new IllegalStateException("Missing filename.");
+		}
 
-        if (fileValue.getGuid() == null || !uuidPattern.matcher(fileValue.getGuid()).matches()) {
-            throw new IllegalStateException("Illegal guid value: " + fileValue.getGuid());
-        }
+		if (fileValue.getGuid() == null || !uuidPattern.matcher(fileValue.getGuid()).matches()) {
+			throw new IllegalStateException("Illegal guid value: " + fileValue.getGuid());
+		}
 
-        return fileValue.toJson();
-    }
+		return fileValue.toJson();
+	}
 
-    @Override
-    protected Class<? extends MobeelizerFieldOptions> getOptionObjectClass() {
-        return MobeelizerEmptyFieldOptions.class;
-    }
+	@Override
+	protected Class<? extends MobeelizerFieldOptions> getOptionObjectClass() {
+		return MobeelizerEmptyFieldOptions.class;
+	}
 
-    @Override
-    public Object parseValue(final String value, final MobeelizerFieldOptions options) {
-        return new MobeelizerFileValue(value);
-    }
+	@Override
+	public Object parseValue(final String value, final MobeelizerFieldOptions options) {
+		return new MobeelizerFileValue(value);
+	}
 
-    public static class MobeelizerFileValue implements MobeelizerFile {
+	public static class MobeelizerFileValue implements MobeelizerFile {
 
-        private String guid;
+		private String guid;
 
-        private String name;
+		private String name;
 
-        public MobeelizerFileValue() {
-            // empty
-        }
+		public MobeelizerFileValue() {
+			// empty
+		}
 
-        private MobeelizerFileValue(final String json) {
-            try {
-                JSONObject jsonObject = new JSONObject(json);
-                if (jsonObject.length() != 2) {
-                    throw new IllegalStateException("Filename and guid are required.");
-                }
-                guid = jsonObject.getString("guid").trim();
-                name = jsonObject.getString("filename");
-            } catch (JSONException e) {
-                throw new IllegalStateException(e);
-            }
-        }
+		private MobeelizerFileValue(final String json) {
+			try {
+				JSONObject jsonObject = new JSONObject(json);
+				if (jsonObject.length() != 2) {
+					throw new IllegalStateException("Filename and guid are required.");
+				}
+				guid = jsonObject.getString("guid").trim();
+				name = jsonObject.getString("filename");
+			} catch (JSONException e) {
+				throw new IllegalStateException(e);
+			}
+		}
 
-        @Override
-        public String getName() {
-            return name;
-        }
+		@Override
+		public String getName() {
+			return name;
+		}
 
-        public void setName(final String name) {
-            this.name = name;
-        }
+		public void setName(final String name) {
+			this.name = name;
+		}
 
-        @Override
-        public String getGuid() {
-            return guid;
-        }
+		@Override
+		public String getGuid() {
+			return guid;
+		}
 
-        public void setGuid(final String guid) {
-            this.guid = guid.trim();
-        }
+		public void setGuid(final String guid) {
+			this.guid = guid.trim();
+		}
 
-        @Override
-        public InputStream getInputStream() {
-            throw new UnsupportedOperationException("Not implemented.");
-        }
+		@Override
+		public InputStream getInputStream() {
+			throw new UnsupportedOperationException("Not implemented.");
+		}
 
-        @Override
-        public File getFile() {
-            throw new UnsupportedOperationException("Not implemented.");
-        }
+		@Override
+		public File getFile() {
+			throw new UnsupportedOperationException("Not implemented.");
+		}
 
-        private String toJson() {
-            try {
-                return new JSONStringer().object().key("filename").value(name).key("guid").value(guid).endObject().toString();
-            } catch (JSONException e) {
-                throw new IllegalStateException(e.getMessage(), e);
-            }
-        }
+		private String toJson() {
+			return "{\"filename\":\"" + name.replaceAll("\"", "\\\\\\\"") + "\",\"guid\":\"" + guid.replaceAll("\"", "\\\\\\\"") + "\"}";
+		}
 
-    }
+	}
 
-    @Override
-    public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
-        MobeelizerFile file = (MobeelizerFile) value;
+	@Override
+	public String convertFromEntityValueToJsonValue(final MobeelizerFieldAccessor field, final Object value,
+			final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
+		MobeelizerFile file = (MobeelizerFile) value;
 
-        if (!validateValue(field, file, options, errors)) {
-            return null;
-        }
+		if (!validateValue(field, file, options, errors)) {
+			return null;
+		}
 
-        JSONObject json = new JSONObject();
-        try {
-            json.put("guid", file.getGuid());
-            json.put("filename", file.getName());
-        } catch (JSONException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
+		JSONObject json = new JSONObject();
+		try {
+			json.put("guid", file.getGuid());
+			json.put("filename", file.getName());
+		} catch (JSONException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
 
-        return json.toString();
-    }
+		return json.toString();
+	}
 
-    @Override
-    public Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value) {
-        return new MobeelizerFileValue(value);
-    }
+	@Override
+	public Object convertFromJsonValueToEntityValue(final MobeelizerFieldAccessor field, final String value) {
+		return new MobeelizerFileValue(value);
+	}
 
-    @Override
-    public Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value) {
-        String[] fileValue = (String[]) value;
+	@Override
+	public Object convertFromDatabaseValueToEntityValue(final MobeelizerFieldAccessor field, final Object value) {
+		String[] fileValue = (String[]) value;
 
-        MobeelizerFileValue file = new MobeelizerFileValue();
-        file.setGuid(fileValue[0]);
-        file.setName(fileValue[1]);
+		MobeelizerFileValue file = new MobeelizerFileValue();
+		file.setGuid(fileValue[0]);
+		file.setName(fileValue[1]);
 
-        return file;
-    }
+		return file;
+	}
 
-    @Override
-    public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
-            final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
-        MobeelizerFile file = (MobeelizerFile) value;
+	@Override
+	public Object convertFromEntityValueToDatabaseValue(final MobeelizerFieldAccessor field, final Object value,
+			final Map<String, String> options, final MobeelizerErrorsBuilder errors) {
+		MobeelizerFile file = (MobeelizerFile) value;
 
-        if (!validateValue(field, file, options, errors)) {
-            return null;
-        }
+		if (!validateValue(field, file, options, errors)) {
+			return null;
+		}
 
-        return file;
-    }
+		return file;
+	}
 
-    @Override
-    public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
-            final MobeelizerErrorsBuilder errors) {
-        return true;
-    }
+	@Override
+	public boolean validateValue(final MobeelizerFieldAccessor field, final Object value, final Map<String, String> options,
+			final MobeelizerErrorsBuilder errors) {
+		return true;
+	}
 
 }
