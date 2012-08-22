@@ -105,12 +105,12 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
 			return new MobeelizerAuthenticateResponseImpl(json.getString("role"), json.getString("instanceGuid"));
 		} catch (IOException e) {
-			if (e.getMessage().contains("Authentication failure")) {
+			if (e.getMessage().contains("Authentication failure") || (e.getMessage().contains("Application instance") && e.getMessage().contains("not found"))) {
 				return null;
 			}
 			throw e;
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -127,7 +127,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
 			return groups;
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -144,7 +144,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
 			return users;
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -159,7 +159,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 			}
 			throw e;
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -168,7 +168,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 		try {
 			executePostAndGetJsonObject("/client/user/create", userToJsonObject(user));
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -177,7 +177,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 		try {
 			executePostAndGetJsonObject("/client/user/update", userToJsonObject(user));
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -192,7 +192,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 		try {
 			return executePostAndGetJsonObject("/synchronizeAll").getString("content");
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -201,7 +201,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 		try {
 			return executePostAndGetJsonObject("/synchronize", "file", outputFile).getString("content");
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -228,11 +228,11 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
-					throw new IOException(e.getMessage(), e);
+					throw new IOException(e.getMessage());
 				}
 			}
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 
 		return MobeelizerConnectionResult.failure(null);
@@ -286,7 +286,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 			executePostAndGetJsonObject("/push", object);
 			delegate.logInfo(logBuilder.toString());
 		} catch (JSONException e) {
-			throw new IOException(e.getMessage(), e);
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -393,8 +393,8 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
 	private HttpClient httpClient() {
 		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-		HttpConnectionParams.setSoTimeout(params, 10000);
+		HttpConnectionParams.setConnectionTimeout(params, 60000);
+		HttpConnectionParams.setSoTimeout(params, 60000);
 		return new DefaultHttpClient(params);
 	}
 
@@ -445,7 +445,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 				throw new IOException("Connection failure: " + response.getStatusLine().getStatusCode() + ".");
 			}
 		} catch (JSONException e) {
-			throw new IOException("Connection failure: " + e.getMessage(), e);
+			throw new IOException("Connection failure: " + e.getMessage());
 		} finally {
 			if (is != null) {
 				try {

@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import com.mobeelizer.java.api.MobeelizerErrorsBuilder;
 import com.mobeelizer.java.api.MobeelizerFile;
@@ -164,11 +163,8 @@ public class MobeelizerFileFieldTypeHelper extends MobeelizerFieldTypeHelper {
         }
 
         private String toJson() {
-            try {
-                return new JSONStringer().object().key("filename").value(name).key("guid").value(guid).endObject().toString();
-            } catch (JSONException e) {
-                throw new IllegalStateException(e.getMessage(), e);
-            }
+            return "{\"filename\":\"" + name.replaceAll("\"", "\\\\\\\"") + "\",\"guid\":\"" + guid.replaceAll("\"", "\\\\\\\"")
+                    + "\"}";
         }
 
     }
