@@ -20,15 +20,20 @@
 
 package com.mobeelizer.java.connection;
 
+import com.mobeelizer.java.api.MobeelizerOperationError;
+
 public class MobeelizerAuthenticateResponseImpl implements MobeelizerAuthenticateResponse {
 
     private final String role;
 
     private final String instanceGuid;
 
-    public MobeelizerAuthenticateResponseImpl(final String role, final String instanceGuid) {
+    private final MobeelizerOperationError error;
+
+    public MobeelizerAuthenticateResponseImpl(final String role, final String instanceGuid, final MobeelizerOperationError error) {
         this.role = role;
         this.instanceGuid = instanceGuid;
+        this.error = error;
     }
 
     @Override
@@ -39,6 +44,11 @@ public class MobeelizerAuthenticateResponseImpl implements MobeelizerAuthenticat
     @Override
     public String getInstanceGuid() {
         return instanceGuid;
+    }
+
+    @Override
+    public MobeelizerOperationError getError() {
+        return error;
     }
 
     @Override

@@ -20,10 +20,14 @@
 
 package com.mobeelizer.java.connection;
 
+import com.mobeelizer.java.api.MobeelizerOperationError;
+
 public interface MobeelizerAuthenticateResponse {
 
     String getRole();
 
     String getInstanceGuid();
+
+    MobeelizerOperationError getError();
 
 }

@@ -25,44 +25,47 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.mobeelizer.java.api.MobeelizerOperationError;
+import com.mobeelizer.java.api.MobeelizerOperationStatus;
 import com.mobeelizer.java.api.user.MobeelizerUser;
 
 public interface MobeelizerConnectionService {
 
-	MobeelizerAuthenticateResponse authenticate(final String login, final String password) throws IOException;
+    MobeelizerAuthenticateResponse authenticate(final String login, final String password);
 
-	@Deprecated
-	MobeelizerAuthenticateResponse authenticate(final String user, final String password, final String token) throws IOException;
+    @Deprecated
+    MobeelizerAuthenticateResponse authenticate(final String user, final String password, final String token);
 
-	MobeelizerAuthenticateResponse authenticate(final String user, final String password, final String deviceType, final String deviceToken) throws IOException;
+    MobeelizerAuthenticateResponse authenticate(final String user, final String password, final String deviceType,
+            final String deviceToken);
 
-	List<String> getGroups() throws IOException;
+    MobeelizerOperationStatus<List<String>> getGroups();
 
-	List<MobeelizerUser> getUsers() throws IOException;
+    MobeelizerOperationStatus<List<MobeelizerUser>> getUsers();
 
-	MobeelizerUser getUser(final String login) throws IOException;
+    MobeelizerOperationStatus<MobeelizerUser> getUser(final String login);
 
-	void createUser(final MobeelizerUser user) throws IOException;
+    MobeelizerOperationError createUser(final MobeelizerUser user);
 
-	void updateUser(final MobeelizerUser user) throws IOException;
+    MobeelizerOperationError updateUser(final MobeelizerUser user);
 
-	boolean deleteUser(final String login) throws IOException;
+    MobeelizerOperationError deleteUser(final String login);
 
-	String sendSyncAllRequest() throws IOException;
+    MobeelizerOperationStatus<String> sendSyncAllRequest();
 
-	String sendSyncDiffRequest(final File outputFile) throws IOException;
+    MobeelizerOperationStatus<String> sendSyncDiffRequest(final File outputFile);
 
-	MobeelizerConnectionResult waitUntilSyncRequestComplete(final String ticket) throws IOException;
+    MobeelizerOperationError waitUntilSyncRequestComplete(final String ticket);
 
-	File getSyncData(final String ticket) throws IOException;
+    File getSyncData(final String ticket) throws IOException;
 
-	void confirmTask(final String ticket) throws IOException;
+    MobeelizerOperationError confirmTask(final String ticket);
 
-	void registerForRemoteNotifications(final String token) throws IOException;
+    MobeelizerOperationError registerForRemoteNotifications(final String token);
 
-	void unregisterForRemoteNotifications(final String token) throws IOException;
+    MobeelizerOperationError unregisterForRemoteNotifications(final String token);
 
-	void sendRemoteNotification(final String device, final String group, final List<String> users,
-			final Map<String, String> notification) throws IOException;
+    MobeelizerOperationError sendRemoteNotification(final String device, final String group, final List<String> users,
+            final Map<String, String> notification);
 
 }
