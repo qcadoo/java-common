@@ -27,14 +27,17 @@ public class MobeelizerOperationErrorImpl implements MobeelizerOperationError {
         }
     }
 
+    @Override
     public String getCode() {
         return code;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
 
+    @Override
     public List<Object> getArguments() {
         return arguments;
     }
@@ -84,10 +87,13 @@ public class MobeelizerOperationErrorImpl implements MobeelizerOperationError {
 
     public static MobeelizerOperationError serverError(final JSONObject json) {
         try {
-            List<Object> args = new ArrayList<Object>();
-            JSONArray jsonArgs = json.getJSONArray("arguments");
-            for (int i = 0; i < jsonArgs.length(); i++) {
-                args.add(jsonArgs.getString(i));
+            List<Object> args = null;
+            if (json.has("arguments") && !json.isNull("arguments")) {
+                args = new ArrayList<Object>();
+                JSONArray jsonArgs = json.getJSONArray("arguments");
+                for (int i = 0; i < jsonArgs.length(); i++) {
+                    args.add(jsonArgs.getString(i));
+                }
             }
             return new MobeelizerOperationErrorImpl(json.getString("code"), json.getString("message"), args);
         } catch (JSONException e) {
