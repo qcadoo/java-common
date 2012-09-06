@@ -28,21 +28,17 @@ import com.mobeelizer.java.api.MobeelizerErrorsBuilder;
 import com.mobeelizer.java.definition.type.options.MobeelizerBelongsToFieldOptions;
 import com.mobeelizer.java.definition.type.options.MobeelizerFieldOptions;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerBelongsToFieldOptionTypeHelper;
-import com.mobeelizer.java.definition.type.options.type.MobeelizerBooleanFieldOptionTypeHelper;
 import com.mobeelizer.java.definition.type.options.type.MobeelizerModelFieldOption;
 import com.mobeelizer.java.model.MobeelizerFieldAccessor;
 import com.mobeelizer.java.util.ValidationUtil;
 
 public class MobeelizerBelongsToFieldTypeHelper extends MobeelizerFieldTypeHelper {
 
-    public static final String ANALYZE_CONFLICT = "analyzeConflict";
-
     public static final String MODEL = "model";
 
     public MobeelizerBelongsToFieldTypeHelper() {
         super(String.class); // TODO V3 auto proxy on belongsTo fields -
                              // Object.class
-        addOption(new MobeelizerModelFieldOption(ANALYZE_CONFLICT, new MobeelizerBooleanFieldOptionTypeHelper(), false));
         addOption(new MobeelizerModelFieldOption(MODEL, new MobeelizerBelongsToFieldOptionTypeHelper(), true));
     }
 

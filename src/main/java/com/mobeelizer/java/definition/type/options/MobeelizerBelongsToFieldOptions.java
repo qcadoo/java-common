@@ -24,17 +24,7 @@ public class MobeelizerBelongsToFieldOptions implements MobeelizerFieldOptions {
 
     private static final long serialVersionUID = -6871567997813790161L;
 
-    private boolean analyzeConflict;
-
     private String model;
-
-    public boolean isAnalyzeConflict() {
-        return analyzeConflict;
-    }
-
-    public void setAnalyzeConflict(final boolean analyzeConflict) {
-        this.analyzeConflict = analyzeConflict;
-    }
 
     public String getModel() {
         return model;
@@ -48,7 +38,6 @@ public class MobeelizerBelongsToFieldOptions implements MobeelizerFieldOptions {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (analyzeConflict ? 1231 : 1237);
         result = prime * result + ((model == null) ? 0 : model.hashCode());
         return result;
     }
@@ -65,9 +54,6 @@ public class MobeelizerBelongsToFieldOptions implements MobeelizerFieldOptions {
             return false;
         }
         MobeelizerBelongsToFieldOptions other = (MobeelizerBelongsToFieldOptions) obj;
-        if (analyzeConflict != other.analyzeConflict) {
-            return false;
-        }
         if (model == null) {
             if (other.model != null) {
                 return false;
@@ -80,7 +66,7 @@ public class MobeelizerBelongsToFieldOptions implements MobeelizerFieldOptions {
 
     @Override
     public String toString() {
-        return "BelongsToModelFieldOptions [analyzeConflict=" + analyzeConflict + ", model=" + model + "]";
+		return "BelongsToModelFieldOptions [model=" + model + "]";
     }
 
 }
