@@ -105,7 +105,11 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             request.setHeader("mas-user-name", login);
             request.setHeader("mas-user-password", password);
 
-            JSONObject json = new JSONObject(executeAndGetContent(request));
+            MobeelizerOperationStatus<String> content = executeAndGetContent(request);
+            if (content.getError() != null) {
+                return new MobeelizerAuthenticateResponseImpl(null, null, content.getError());
+            }
+            JSONObject json = new JSONObject(content.getContent());
 
             return new MobeelizerAuthenticateResponseImpl(json.getString("role"), json.getString("instanceGuid"), null);
         } catch (JSONException e) {
