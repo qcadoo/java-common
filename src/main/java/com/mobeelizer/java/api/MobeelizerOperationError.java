@@ -98,8 +98,8 @@ public class MobeelizerOperationError {
         return new MobeelizerOperationError("other", message, null);
     }
 
-    public static MobeelizerOperationError other(final Exception e) {
-        if (e.getMessage() != null && !e.getMessage().isEmpty()) {
+    public static MobeelizerOperationError exception(final Exception e) {
+        if (e.getMessage() != null && !e.getMessage().trim().equals("")) {
             return other(e.getMessage());
         }
         return other(e.getClass().getCanonicalName());

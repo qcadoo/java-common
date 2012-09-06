@@ -134,7 +134,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             }
             return new MobeelizerOperationStatus<List<String>>(groups);
         } catch (JSONException e) {
-            return new MobeelizerOperationStatus<List<String>>(MobeelizerOperationError.other(e));
+            return new MobeelizerOperationStatus<List<String>>(MobeelizerOperationError.exception(e));
         }
     }
 
@@ -156,7 +156,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
             return new MobeelizerOperationStatus<List<MobeelizerUser>>(users);
         } catch (JSONException e) {
-            return new MobeelizerOperationStatus<List<MobeelizerUser>>(MobeelizerOperationError.other(e));
+            return new MobeelizerOperationStatus<List<MobeelizerUser>>(MobeelizerOperationError.exception(e));
         }
     }
 
@@ -170,7 +170,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             JSONObject json = new JSONObject(response.getContent());
             return new MobeelizerOperationStatus<MobeelizerUser>(jsonObjectToUser(json));
         } catch (JSONException e) {
-            return new MobeelizerOperationStatus<MobeelizerUser>(MobeelizerOperationError.other(e));
+            return new MobeelizerOperationStatus<MobeelizerUser>(MobeelizerOperationError.exception(e));
         }
     }
 
@@ -179,7 +179,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         try {
             return executePostAndGetContent("/client/user/create", userToJsonObject(user)).getError();
         } catch (JSONException e) {
-            return MobeelizerOperationError.other(e);
+            return MobeelizerOperationError.exception(e);
         }
     }
 
@@ -188,7 +188,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         try {
             return executePostAndGetContent("/client/user/update", userToJsonObject(user)).getError();
         } catch (JSONException e) {
-            return MobeelizerOperationError.other(e);
+            return MobeelizerOperationError.exception(e);
         }
     }
 
@@ -339,7 +339,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         try {
             request.setEntity(new StringEntity(body.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            MobeelizerOperationError.other(e);
+            MobeelizerOperationError.exception(e);
         }
 
         setHeaders(request, true, true);
@@ -354,7 +354,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         try {
             entity.addPart(name, new InputStreamBody(new FileInputStream(file), name));
         } catch (FileNotFoundException e) {
-            MobeelizerOperationError.other(e);
+            MobeelizerOperationError.exception(e);
         }
         request.setEntity(entity);
 
@@ -454,9 +454,9 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             }
 
         } catch (JSONException e) {
-            MobeelizerOperationError.other(e);
+            MobeelizerOperationError.exception(e);
         } catch (IOException e) {
-            MobeelizerOperationError.other(e);
+            MobeelizerOperationError.exception(e);
         } finally {
             if (is != null) {
                 try {
