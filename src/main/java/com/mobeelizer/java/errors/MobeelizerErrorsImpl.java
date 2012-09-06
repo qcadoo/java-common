@@ -1,10 +1,13 @@
-package com.mobeelizer.java.api;
+package com.mobeelizer.java.errors;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import com.mobeelizer.java.api.MobeelizerError;
+import com.mobeelizer.java.api.MobeelizerErrors;
 
 /**
  * Representation of the database exception.
@@ -15,7 +18,7 @@ public class MobeelizerErrorsImpl implements MobeelizerErrors {
 
     private final Map<String, List<MobeelizerError>> errors;
 
-    MobeelizerErrorsImpl(final Map<String, List<MobeelizerError>> errors) {
+    public MobeelizerErrorsImpl(final Map<String, List<MobeelizerError>> errors) {
         this.errors = errors;
     }
 

@@ -1,4 +1,6 @@
-package com.mobeelizer.java.api;
+package com.mobeelizer.java.errors;
+
+import com.mobeelizer.java.api.MobeelizerOperationError;
 
 
 public class MobeelizerOperationStatus<T> {

@@ -62,8 +62,9 @@ import org.json.JSONObject;
 
 import com.mobeelizer.java.api.MobeelizerMode;
 import com.mobeelizer.java.api.MobeelizerOperationError;
-import com.mobeelizer.java.api.MobeelizerOperationStatus;
 import com.mobeelizer.java.api.user.MobeelizerUser;
+import com.mobeelizer.java.errors.MobeelizerOperationErrorImpl;
+import com.mobeelizer.java.errors.MobeelizerOperationStatus;
 
 public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionService {
 
@@ -113,7 +114,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
             return new MobeelizerAuthenticateResponseImpl(json.getString("role"), json.getString("instanceGuid"), null);
         } catch (JSONException e) {
-            return new MobeelizerAuthenticateResponseImpl(null, null, MobeelizerOperationError.ioError(new IOException(e
+            return new MobeelizerAuthenticateResponseImpl(null, null, MobeelizerOperationErrorImpl.exception(new IOException(e
                     .getMessage())));
         }
     }
@@ -134,7 +135,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             }
             return new MobeelizerOperationStatus<List<String>>(groups);
         } catch (JSONException e) {
-            return new MobeelizerOperationStatus<List<String>>(MobeelizerOperationError.exception(e));
+            return new MobeelizerOperationStatus<List<String>>(MobeelizerOperationErrorImpl.exception(e));
         }
     }
 
@@ -156,7 +157,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
             return new MobeelizerOperationStatus<List<MobeelizerUser>>(users);
         } catch (JSONException e) {
-            return new MobeelizerOperationStatus<List<MobeelizerUser>>(MobeelizerOperationError.exception(e));
+            return new MobeelizerOperationStatus<List<MobeelizerUser>>(MobeelizerOperationErrorImpl.exception(e));
         }
     }
 
@@ -170,7 +171,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             JSONObject json = new JSONObject(response.getContent());
             return new MobeelizerOperationStatus<MobeelizerUser>(jsonObjectToUser(json));
         } catch (JSONException e) {
-            return new MobeelizerOperationStatus<MobeelizerUser>(MobeelizerOperationError.exception(e));
+            return new MobeelizerOperationStatus<MobeelizerUser>(MobeelizerOperationErrorImpl.exception(e));
         }
     }
 
@@ -179,7 +180,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         try {
             return executePostAndGetContent("/client/user/create", userToJsonObject(user)).getError();
         } catch (JSONException e) {
-            return MobeelizerOperationError.exception(e);
+            return MobeelizerOperationErrorImpl.exception(e);
         }
     }
 
@@ -188,7 +189,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         try {
             return executePostAndGetContent("/client/user/update", userToJsonObject(user)).getError();
         } catch (JSONException e) {
-            return MobeelizerOperationError.exception(e);
+            return MobeelizerOperationErrorImpl.exception(e);
         }
     }
 
@@ -228,7 +229,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
                     String message = "Check task status success: " + status + " with result " + json.getString("result")
                             + " and message '" + json.getString("message") + "'";
                     delegate.logInfo(message);
-                    return MobeelizerOperationError.syncRejected(json.getString("result"), json.getString("message"));
+                    return MobeelizerOperationErrorImpl.syncRejected(json.getString("result"), json.getString("message"));
                 } else if ("FINISHED".toString().equals(status)) {
                     return null;
                 }
@@ -236,11 +237,11 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
-                    return MobeelizerOperationError.other(e.getMessage());
+                    return MobeelizerOperationErrorImpl.other(e.getMessage());
                 }
             }
         } catch (JSONException e) {
-            return MobeelizerOperationError.ioError(new IOException(e.getMessage()));
+            return MobeelizerOperationErrorImpl.exception(new IOException(e.getMessage()));
         }
         return null;
     }
@@ -293,7 +294,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             delegate.logInfo(logBuilder.toString());
             return executePostAndGetContent("/push", object).getError();
         } catch (JSONException e) {
-            return MobeelizerOperationError.other(e.getMessage());
+            return MobeelizerOperationErrorImpl.other(e.getMessage());
         }
     }
 
@@ -339,7 +340,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         try {
             request.setEntity(new StringEntity(body.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            MobeelizerOperationError.exception(e);
+            return new MobeelizerOperationStatus<String>(MobeelizerOperationErrorImpl.exception(e));
         }
 
         setHeaders(request, true, true);
@@ -354,7 +355,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         try {
             entity.addPart(name, new InputStreamBody(new FileInputStream(file), name));
         } catch (FileNotFoundException e) {
-            MobeelizerOperationError.exception(e);
+            return new MobeelizerOperationStatus<String>(MobeelizerOperationErrorImpl.exception(e));
         }
         request.setEntity(entity);
 
@@ -420,10 +421,12 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
         Reader reader = null;
 
         if (!delegate.isNetworkAvailable()) {
-            return new MobeelizerOperationStatus<String>(MobeelizerOperationError.missingConnectionError());
+            return new MobeelizerOperationStatus<String>(MobeelizerOperationErrorImpl.missingConnectionError());
         }
 
         delegate.setProxyIfNecessary(request);
+
+        MobeelizerOperationError error = null;
 
         try {
             HttpResponse response = client.execute(request);
@@ -432,7 +435,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
             HttpEntity entity = response.getEntity();
             if (entity == null) {
-                return new MobeelizerOperationStatus<String>(MobeelizerOperationError.connectionError());
+                return new MobeelizerOperationStatus<String>(MobeelizerOperationErrorImpl.connectionError());
             }
             is = entity.getContent();
             Writer writer = new StringWriter();
@@ -446,17 +449,17 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 
             if (status == HttpStatus.SC_OK) {
                 return new MobeelizerOperationStatus<String>(content);
-            } else if (status == HttpStatus.SC_INTERNAL_SERVER_ERROR && !content.isEmpty()) {
+            } else if (status == HttpStatus.SC_INTERNAL_SERVER_ERROR && content.trim().length() > 0) {
                 JSONObject json = new JSONObject(content);
-                return new MobeelizerOperationStatus<String>(MobeelizerOperationError.serverError(json));
+                error = MobeelizerOperationErrorImpl.serverError(json);
             } else {
-                return new MobeelizerOperationStatus<String>(MobeelizerOperationError.connectionError(status));
+                error = MobeelizerOperationErrorImpl.connectionError(status);
             }
 
         } catch (JSONException e) {
-            MobeelizerOperationError.exception(e);
+            error = MobeelizerOperationErrorImpl.exception(e);
         } catch (IOException e) {
-            MobeelizerOperationError.exception(e);
+            error = MobeelizerOperationErrorImpl.exception(e);
         } finally {
             if (is != null) {
                 try {
@@ -474,7 +477,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
             }
             client.getConnectionManager().shutdown();
         }
-        return null;
+        return new MobeelizerOperationStatus<String>(error);
     }
 
     private File executeAndGetFile(final HttpRequestBase request) throws IOException {

@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.mobeelizer.java.api.MobeelizerOperationError;
-import com.mobeelizer.java.api.MobeelizerOperationStatus;
 import com.mobeelizer.java.api.user.MobeelizerUser;
+import com.mobeelizer.java.errors.MobeelizerOperationStatus;
 
 public interface MobeelizerConnectionService {
 

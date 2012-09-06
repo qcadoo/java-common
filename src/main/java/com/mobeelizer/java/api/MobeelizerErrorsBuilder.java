@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mobeelizer.java.errors.MobeelizerErrorsImpl;
+
 public class MobeelizerErrorsBuilder {
 
     private final Map<String, List<MobeelizerError>> errors = new HashMap<String, List<MobeelizerError>>();
