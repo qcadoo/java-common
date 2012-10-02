@@ -61,7 +61,7 @@ public class MobeelizerOutputData {
 
     public void writeEntity(final MobeelizerJsonEntity jsonEntity) {
         try {
-            dataOutputStream.write(jsonEntity.getJson().getBytes("UTF-8"));
+			dataOutputStream.write(jsonEntity.getJson().getBytes("UTF-8"));
             dataOutputStream.write('\n');
         } catch (IOException e) {
             closeQuietly(zip);

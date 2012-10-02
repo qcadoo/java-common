@@ -211,7 +211,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
     @Override
     public MobeelizerOperationError waitUntilSyncRequestComplete(final String ticket) {
         try {
-            for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < 240; i++) {
                 MobeelizerOperationStatus<String> checkStatusResult = executeGetAndGetContent("/checkStatus", new String[] {
                         "ticket", ticket });
                 if (checkStatusResult.getError() != null) {
@@ -235,7 +235,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
                 }
 
                 try {
-                    Thread.sleep(5000);
+					Thread.sleep(100 * i + 500);
                 } catch (InterruptedException e) {
                     return MobeelizerOperationErrorImpl.other(e.getMessage());
                 }

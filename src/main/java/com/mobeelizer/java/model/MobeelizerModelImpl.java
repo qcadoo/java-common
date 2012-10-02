@@ -156,11 +156,11 @@ public class MobeelizerModelImpl implements MobeelizerModel {
                         json.getConflictState() != null && !json.getConflictState().equals(ConflictState.NO_IN_CONFLICT));
             }
 
-            if (deletedField != null) {
-                setValue(deletedField, entity, json.isDeleted());
-            }
 
             if (json.getFields() != null) {
+				if (deletedField != null) {
+					setValue(deletedField, entity, json.isDeleted());
+				}
                 for (MobeelizerField field : this.fields) {
                     ((MobeelizerFieldImpl) field).setValueFromJsonEntityToEntity(json.getFields(), entity);
                 }
