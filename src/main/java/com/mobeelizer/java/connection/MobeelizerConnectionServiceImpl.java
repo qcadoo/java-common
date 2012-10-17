@@ -350,19 +350,22 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 	private MobeelizerOperationStatus<String> executePostAndGetContent(final String path, final String name, final File file) {
 		HttpPost request = new HttpPost(getUrl(path, new String[0]));
 
+
 		String boundary = "---------------------------14737809831466499882746641449";
-		String boundarySeparator = "\r\n--" + boundary + "\r\n";
-		String contentDisposition = "content-disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
-		String contentType = "content-type: application/octet-stream\r\n\r\n";
 
 		request.setHeader("content-type", "multipart/form-data; boundary=" + boundary);
+
+		String boundaryBegin = "\r\n--" + boundary + "\r\n";
+		String boundaryEnd = "\r\n--" + boundary + "--\r\n";
+		String contentDisposition = "content-disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
+		String contentType = "content-type: application/octet-stream\r\n\r\n";
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		try {
-			out.write(boundarySeparator.getBytes("UTF-8"), 0, boundarySeparator.length());
+			out.write(boundaryBegin.getBytes("UTF-8"), 0, boundaryBegin.length());
 			out.write(contentDisposition.getBytes("UTF-8"), 0, contentDisposition.length());
-			out.write(contentType.getBytes("UTF-8"), 0, contentDisposition.length());
+			out.write(contentType.getBytes("UTF-8"), 0, contentType.length());
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		}
@@ -392,7 +395,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 		}
 
 		try {
-			out.write(boundarySeparator.getBytes("UTF-8"), 0, boundarySeparator.length());
+			out.write(boundaryEnd.getBytes("UTF-8"), 0, boundaryEnd.length());
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		}
