@@ -46,6 +46,8 @@ public class MobeelizerJsonEntity {
     private String owner;
 
     private String group;
+    
+    private boolean resolveConflict;
 
     public MobeelizerJsonEntity() {
         // empty
@@ -162,9 +164,9 @@ public class MobeelizerJsonEntity {
         JSONObject json = new JSONObject();
         json.put("model", model);
         json.put("guid", guid);
-        json.put("resolveConflict", "false");
         json.put("owner", owner);
         json.put("group", group);
+        json.put("resolveConflict", resolveConflict);
         json.put("conflictState", conflictState == null ? ConflictState.NO_IN_CONFLICT : conflictState.name());
 
         if (fields != null) {
@@ -193,5 +195,13 @@ public class MobeelizerJsonEntity {
             return "invalid json";
         }
     }
+
+	public boolean isResolveConflict() {
+		return resolveConflict;
+	}
+
+	public void setResolveConflict(boolean resolveConflict) {
+		this.resolveConflict = resolveConflict;
+	}
 
 }

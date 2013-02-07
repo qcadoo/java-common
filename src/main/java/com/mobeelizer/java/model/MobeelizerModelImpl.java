@@ -54,6 +54,8 @@ public class MobeelizerModelImpl implements MobeelizerModel {
     private final MobeelizerFieldAccessor modifiedField;
 
     private final MobeelizerFieldAccessor deletedField;
+    
+    private final MobeelizerFieldAccessor resolveConflictField;
 
     private final Set<MobeelizerField> fields;
 
@@ -74,6 +76,7 @@ public class MobeelizerModelImpl implements MobeelizerModel {
             conflictedField = getOptionalFieldAccessor(clazz, "conflicted", Boolean.TYPE);
             modifiedField = getOptionalFieldAccessor(clazz, "modified", Boolean.TYPE);
             deletedField = getOptionalFieldAccessor(clazz, "deleted", Boolean.TYPE);
+            resolveConflictField = getOptionalFieldAccessor(clazz, "resolveConflict", Boolean.TYPE);
         } else {
             guidField = new BasicMobeelizerFieldAccessor("guid", String.class);
             ownerField = new BasicMobeelizerFieldAccessor("owner", String.class);
@@ -81,6 +84,7 @@ public class MobeelizerModelImpl implements MobeelizerModel {
             conflictedField = new BasicMobeelizerFieldAccessor("conflicted", Boolean.class);
             modifiedField = new BasicMobeelizerFieldAccessor("modified", Boolean.class);
             deletedField = new BasicMobeelizerFieldAccessor("deleted", Boolean.class);
+            resolveConflictField = new BasicMobeelizerFieldAccessor("resolveConflict", Boolean.class);
         }
     }
 
@@ -187,6 +191,12 @@ public class MobeelizerModelImpl implements MobeelizerModel {
             json.setGroup((String) getValue(groupField, entity));
         }
 
+        if (resolveConflictField != null){
+        	if((Boolean) getValue(resolveConflictField, entity)){
+        		json.setResolveConflict((Boolean) getValue(resolveConflictField, entity));
+        	}
+        }
+        
         if (conflictedField != null) {
             json.setConflictState((Boolean) getValue(conflictedField, entity) ? ConflictState.IN_CONFLICT
                     : ConflictState.NO_IN_CONFLICT);

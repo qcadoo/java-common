@@ -67,5 +67,6 @@ public interface MobeelizerConnectionService {
 
     MobeelizerOperationError sendRemoteNotification(final String device, final String group, final List<String> users,
             final Map<String, String> notification);
-
+    
+    File getConflictHistory(final String model, final String guid) throws IOException;
 }

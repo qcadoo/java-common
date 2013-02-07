@@ -249,6 +249,11 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 	public File getSyncData(final String ticket) throws IOException {
 		return executeGetForFile("/data", "ticket", ticket);
 	}
+	
+	@Override
+	public File getConflictHistory(String model, String guid) throws IOException {
+		return executeGetForFile("/conflictHistory", "model", model, "guid", guid);
+	}
 
 	@Override
 	public MobeelizerOperationError confirmTask(final String ticket) {
@@ -561,7 +566,8 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 				}
 
 				return file;
-			} else {
+			}
+			else{
 				throw new IOException("Connection failure: " + response.getStatusLine().getStatusCode() + ".");
 			}
 		} finally {
