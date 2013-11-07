@@ -119,21 +119,10 @@
 		</plugins>
 	</build>
 
-	<distributionManagement>
-		<repository>
-			<id>qcadoo-releases-repository</id>
-			<url>http://nexus.qcadoo.org/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>qcadoo-snapshots-repository</id>
-			<url>http://nexus.qcadoo.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<scm>
-	    <connection>scm:git:ssh://github.com/mobeelizer/java-common.git</connection>
-        <developerConnection>scm:git:git@github.com:mobeelizer/java-common.git</developerConnection>
-        <url>http://github.com/mobeelizer/java-common</url>
+	    <connection>scm:git:ssh://github.com/qcadoo/java-common.git</connection>
+        <developerConnection>scm:git:git@github.com:qcadoo/java-common.git</developerConnection>
+        <url>http://github.com/qcadoo/java-common</url>
 	</scm>
 	
 </project>
