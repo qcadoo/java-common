@@ -59,7 +59,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mobeelizer.java.api.MobeelizerMode;
+//import com.mobeelizer.java.api.MobeelizerMode;
 import com.mobeelizer.java.api.MobeelizerOperationError;
 import com.mobeelizer.java.api.user.MobeelizerUser;
 import com.mobeelizer.java.errors.MobeelizerOperationErrorImpl;
@@ -67,9 +67,9 @@ import com.mobeelizer.java.errors.MobeelizerOperationStatus;
 
 public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionService {
 
-	private static final String DEFAULT_TEST_URL = "https://cloud.mobeelizer.com/sync/v2";
+	//private static final String DEFAULT_TEST_URL = "https://cloud.mobeelizer.com/sync/v2";
 
-	private static final String DEFAULT_PRODUCTION_URL = "https://cloud.mobeelizer.com/sync/v2";
+	//private static final String DEFAULT_PRODUCTION_URL = "https://cloud.mobeelizer.com/sync/v2";
 
 	private final MobeelizerConnectionServiceDelegate delegate;
 
@@ -438,10 +438,13 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 	private String getUrl() {
 		if (delegate.getUrl() != null) {
 			return delegate.getUrl();
-		} else if (delegate.getMode().equals(MobeelizerMode.PRODUCTION)) {
-			return DEFAULT_PRODUCTION_URL;
+		//} else if (delegate.getMode().equals(MobeelizerMode.PRODUCTION)) {
+		//	return DEFAULT_PRODUCTION_URL;
+		//} else {
+		//	return DEFAULT_TEST_URL;
+		//}
 		} else {
-			return DEFAULT_TEST_URL;
+			throw new IllegalStateException("Url to the cloud is required in the configuration.");
 		}
 	}
 
