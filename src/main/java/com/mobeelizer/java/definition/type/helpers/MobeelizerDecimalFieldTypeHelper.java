@@ -23,6 +23,8 @@ package com.mobeelizer.java.definition.type.helpers;
 import static com.mobeelizer.java.model.MobeelizerReflectionUtil.setValue;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -202,7 +204,8 @@ public class MobeelizerDecimalFieldTypeHelper extends MobeelizerFieldTypeHelper 
         MobeelizerDecimalFieldOptions decimalOptions = (MobeelizerDecimalFieldOptions) options;
 
         if (decimal.scale() > decimalOptions.getScale()) {
-            throw new IllegalStateException("Scale for " + normalizedValue + " is larger than " + decimalOptions.getScale() + ".");
+        	decimal = decimal.round(new MathContext(decimalOptions.getScale(), RoundingMode.HALF_DOWN));
+            //throw new IllegalStateException("Scale for " + normalizedValue + " is larger than " + decimalOptions.getScale() + ".");
         }
 
         checkValueRange(normalizedValue, decimal, decimalOptions);
