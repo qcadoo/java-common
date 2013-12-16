@@ -204,8 +204,7 @@ public class MobeelizerDecimalFieldTypeHelper extends MobeelizerFieldTypeHelper 
         MobeelizerDecimalFieldOptions decimalOptions = (MobeelizerDecimalFieldOptions) options;
 
         if (decimal.scale() > decimalOptions.getScale()) {
-        	decimal = decimal.round(new MathContext(decimalOptions.getScale(), RoundingMode.HALF_DOWN));
-            //throw new IllegalStateException("Scale for " + normalizedValue + " is larger than " + decimalOptions.getScale() + ".");
+            throw new IllegalStateException("Scale for " + normalizedValue + " is larger than " + decimalOptions.getScale() + ".");
         }
 
         checkValueRange(normalizedValue, decimal, decimalOptions);
