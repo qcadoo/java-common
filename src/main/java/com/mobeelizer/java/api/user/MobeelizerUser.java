@@ -30,6 +30,8 @@ public class MobeelizerUser {
     private String login;
 
     private String password;
+    
+    private String sha256EncodedPassword;
 
     private String mail;
 
@@ -78,6 +80,28 @@ public class MobeelizerUser {
     public void setPassword(final String password) {
         this.password = password;
     }
+
+
+    /**
+     * Sets HA-256 hashed password.
+     * 
+     * @param password
+     *            password
+     * @since 1.0
+     */
+	public String getSha256EncodedPassword() {
+		return sha256EncodedPassword;
+	}
+
+	/**
+     * Gets the SHA-256 hashed password. Note that this field is not retrieve from the Cloud.
+     * 
+     * @return password
+     * @since 1.0
+     */
+	public void setSha256EncodedPassword(String sha256EncodedPassword) {
+		this.sha256EncodedPassword = sha256EncodedPassword;
+	}
 
     /**
      * Gets the email address.

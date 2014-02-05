@@ -316,6 +316,7 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 		json.put("login", user.getLogin());
 		json.put("group", user.getGroup());
 		json.put("password", user.getPassword());
+		json.put("sha256EncodedPassword", user.getSha256EncodedPassword());
 		json.put("mail", user.getMail());
 		json.put("admin", user.isAdmin() ? "true" : "false");
 		return json;
