@@ -81,22 +81,20 @@ public class MobeelizerUser {
         this.password = password;
     }
 
-
     /**
-     * Sets HA-256 hashed password.
-     * 
-     * @param password
-     *            password
+     * Gets the SHA-256 hashed password. Note that this field is not retrieve from the Cloud.
+     *
+     * @return password
      * @since 1.0
      */
+
 	public String getSha256EncodedPassword() {
 		return sha256EncodedPassword;
 	}
 
-	/**
-     * Gets the SHA-256 hashed password. Note that this field is not retrieve from the Cloud.
-     * 
-     * @return password
+    /**
+     * Sets HA-256 hashed password.
+     *
      * @since 1.0
      */
 	public void setSha256EncodedPassword(String sha256EncodedPassword) {

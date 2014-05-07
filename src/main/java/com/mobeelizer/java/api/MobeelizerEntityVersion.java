@@ -13,6 +13,7 @@ public interface MobeelizerEntityVersion {
 	 * User who created this version and synchronized.
 	 * 
 	 * @since 1.7
+     * @return Returns user object.
 	 */	
 	String getUser();
 
@@ -20,6 +21,7 @@ public interface MobeelizerEntityVersion {
 	 * Date of version synchronization.
 	 * 
 	 * @since 1.7
+     * @return Returns date of version synchronization.
 	 */	
 	Date getDate();
 	
@@ -28,6 +30,7 @@ public interface MobeelizerEntityVersion {
 	 * Device class where version was created.
 	 * 
 	 * @since 1.7
+     * @return Returns device class where version was created.
 	 */	
 	String getDevice();
 	
@@ -36,6 +39,7 @@ public interface MobeelizerEntityVersion {
 	 * Entity object.
 	 * 
 	 * @since 1.7
+     * @return Returns entity object.
 	 */	
 	Object getEntity();
 }
