@@ -1,6 +1,3 @@
-.classpath
-.project
-.settings
 .DS_Store
 target
 pom.xml.releaseBackup
@@ -8,3 +5,4 @@ pom.xml.next
 pom.xml.tag
 release.properties
 bin
+*.iml
