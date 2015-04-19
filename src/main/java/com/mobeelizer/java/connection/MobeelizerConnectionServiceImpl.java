@@ -391,64 +391,6 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 		return executeAndGetContent(request);
 	}
 
-//	private MobeelizerOperationStatus<String> executePostAndGetContent(final String path, final String name, final File file) {
-//		HttpPost request = new HttpPost(getUrl(path, new String[0]));
-//
-//		String boundary = "---------------------------14737809831466499882746641449";
-//
-//		request.setHeader("content-type", "multipart/form-data; boundary=" + boundary);
-//
-//		String boundaryBegin = "\r\n--" + boundary + "\r\n";
-//		String boundaryEnd = "\r\n--" + boundary + "--\r\n";
-//		String contentDisposition = "content-disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
-//		String contentType = "content-type: application/octet-stream\r\n\r\n";
-//
-//		ByteArrayOutputStream multipartBegin = new ByteArrayOutputStream();
-//
-//		try {
-//			multipartBegin.write(boundaryBegin.getBytes("UTF-8"), 0, boundaryBegin.length());
-//			multipartBegin.write(contentDisposition.getBytes("UTF-8"), 0, contentDisposition.length());
-//			multipartBegin.write(contentType.getBytes("UTF-8"), 0, contentType.length());
-//		} catch (UnsupportedEncodingException e) {
-//			throw new IllegalStateException(e.getMessage(), e);
-//		}
-//
-//		long length = 0;
-//		InputStream in = null;
-//		try {
-//			length += file.length();
-//			length += multipartBegin.toByteArray().length;
-//			length += boundaryEnd.getBytes("UTF-8").length;
-//
-//			Vector<InputStream> streamSequence = new Vector<InputStream>(3);
-//			streamSequence.add(new ByteArrayInputStream(multipartBegin.toByteArray()));
-//			streamSequence.add(new FileInputStream(file));
-//			streamSequence.add(new ByteArrayInputStream(boundaryEnd.getBytes("UTF-8")));
-//			in = new SequenceInputStream(streamSequence.elements());
-//
-//		} catch (FileNotFoundException e) {
-//			throw new IllegalStateException(e.getMessage(), e);
-//		} catch (IOException e) {
-//			throw new IllegalStateException(e.getMessage(), e);
-//		} finally {
-//			try {
-//				if (in != null) {
-//					in.close();
-//				}
-//			} catch (IOException ex) {
-//				// ignore
-//			}
-//		}
-//
-//		InputStreamEntity entity = new InputStreamEntity(in, length);
-//
-//		request.setEntity(entity);
-//
-//		setHeaders(request, false, true);
-//
-//		return executeAndGetContent(request);
-//	}
-
 	private void setHeaders(final HttpRequestBase request, final boolean setJsonContentType, final boolean setUserPassword) {
 		if (setJsonContentType) {
 			request.setHeader("content-type", "application/json");
