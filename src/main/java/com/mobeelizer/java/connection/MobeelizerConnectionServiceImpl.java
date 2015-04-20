@@ -20,24 +20,11 @@
 
 package com.mobeelizer.java.connection;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -48,7 +35,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -366,47 +353,36 @@ public class MobeelizerConnectionServiceImpl implements MobeelizerConnectionServ
 		String contentDisposition = "content-disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
 		String contentType = "content-type: application/octet-stream\r\n\r\n";
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		Vector<InputStream> streamSequence = new Vector<InputStream>(3);
 
+		ByteArrayOutputStream multipartBegin = new ByteArrayOutputStream();
 		try {
-			out.write(boundaryBegin.getBytes("UTF-8"), 0, boundaryBegin.length());
-			out.write(contentDisposition.getBytes("UTF-8"), 0, contentDisposition.length());
-			out.write(contentType.getBytes("UTF-8"), 0, contentType.length());
+			multipartBegin.write(boundaryBegin.getBytes("UTF-8"), 0, boundaryBegin.length());
+			multipartBegin.write(contentDisposition.getBytes("UTF-8"), 0, contentDisposition.length());
+			multipartBegin.write(contentType.getBytes("UTF-8"), 0, contentType.length());
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		}
-
-		byte[] buffer = new byte[1024];
-		int bytesRead = 0;
-
-		BufferedInputStream in = null;
+		streamSequence.addElement(new ByteArrayInputStream(multipartBegin.toByteArray()));
 
 		try {
-			in = new BufferedInputStream(new FileInputStream(file));
-			while ((bytesRead = in.read(buffer)) != -1) {
-				out.write(buffer, 0, bytesRead);
-			}
+			streamSequence.addElement(new FileInputStream(file));
 		} catch (FileNotFoundException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		} catch (IOException e) {
 			throw new IllegalStateException(e.getMessage(), e);
-		} finally {
-			try {
-				if (in != null) {
-					in.close();
-				}
-			} catch (IOException ex) {
-				// ignore
-			}
 		}
 
 		try {
-			out.write(boundaryEnd.getBytes("UTF-8"), 0, boundaryEnd.length());
+			streamSequence.addElement(new ByteArrayInputStream(boundaryEnd.getBytes("UTF-8")));
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		}
 
-		ByteArrayEntity entity = new ByteArrayEntity(out.toByteArray());
+		InputStreamEntity entity = new InputStreamEntity(new SequenceInputStream(streamSequence.elements()),
+				multipartBegin.toByteArray().length
+						+ file.length()
+						+ boundaryEnd.length());
 
 		request.setEntity(entity);
 
